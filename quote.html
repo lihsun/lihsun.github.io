@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="东阳茂盛塑胶自定义地板报价配置 - 在线自定义 SPC/LVT/WPC 三种地板的每一层配置（UV涂层、耐磨层、装饰纸、基材等），实时生成截面结构图与配置摘要，提交后 1 个工作日内获得专属报价。" data-i18n-desc="quote.metaDesc">
+    <meta name="keywords" content="自定义地板报价,SPC地板配置,LVT地板配置,WPC地板配置,塑胶地板定制,在线报价">
+    <title data-i18n-title="quote.pageTitle">自定义报价配置 - SPC/LVT/WPC 地板在线定制 | 东阳茂盛塑胶</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ========== 头部导航 ========== -->
+<header class="header">
+    <div class="container header__inner">
+        <a href="index.html" class="logo">
+            <div class="logo__mark">茂</div>
+            <div class="logo__text">
+                <span class="zh" data-i18n="brand.name">东阳茂盛塑胶</span>
+                <span class="en" data-i18n="brand.nameEn">MAOSHENG PLASTIC</span>
+            </div>
+        </a>
+        <nav class="nav" id="mainNav">
+            <a href="index.html" class="nav__link" data-i18n="nav.home">首页</a>
+            <a href="products.html" class="nav__link" data-i18n="nav.products">产品中心</a>
+            <a href="cases.html" class="nav__link" data-i18n="nav.cases">案例展示</a>
+            <a href="about.html" class="nav__link" data-i18n="nav.about">公司介绍</a>
+            <a href="contact.html" class="nav__link" data-i18n="nav.contact">联系我们</a>
+            <a href="quote.html" class="nav__link nav__cta btn btn--primary active" data-i18n="nav.getQuote">获取报价</a>
+
+            <!-- 移动端语言切换器 -->
+            <div class="lang-switch lang-switch--mobile">
+                <button class="lang-switch__btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Language">
+                    <span class="lang-switch__icon">🌐</span>
+                    <span class="lang-switch__code-cur">ZH</span>
+                    <span class="lang-switch__current">中文</span>
+                    <span class="lang-switch__arrow">▼</span>
+                </button>
+                <ul class="lang-switch__list" role="menu"></ul>
+            </div>
+        </nav>
+
+        <!-- 桌面端语言切换器 -->
+        <div class="lang-switch lang-switch--desktop" id="langSwitch">
+            <button class="lang-switch__btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Language">
+                <span class="lang-switch__icon">🌐</span>
+                <span class="lang-switch__code-cur">ZH</span>
+                <span class="lang-switch__current">中文</span>
+                <span class="lang-switch__arrow">▼</span>
+            </button>
+            <ul class="lang-switch__list" role="menu"></ul>
+        </div>
+
+        <button class="nav-toggle" aria-label="菜单"><span></span><span></span><span></span></button>
+    </div>
+</header>
+<div class="nav-overlay"></div>
+
+<!-- ========== 页面 Banner ========== -->
+<section class="page-banner">
+    <style>.page-banner::before{background-image:url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20vinyl%20flooring%20cross%20section%20layer%20structure%20display%2C%20industrial%20product%20photography%2C%20SPC%20LVT%20WPC%20flooring%20samples%2C%20professional%20clean%20background&image_size=landscape_16_9');}</style>
+    <div class="container">
+        <div class="page-banner__inner">
+            <h1 data-i18n="quote.banner.title">自定义报价配置</h1>
+            <div class="breadcrumb">
+                <a href="index.html" data-i18n="nav.home">首页</a>
+                <span class="sep">/</span>
+                <span data-i18n="quote.banner.title">自定义报价配置</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== 介绍 + 主配置区 ========== -->
+<section class="section">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="eyebrow" data-i18n="quote.intro.eyebrow">Custom Quote</span>
+            <h2 data-i18n="quote.intro.title">按需定制 · 三步获取专属报价</h2>
+            <p class="lead" data-i18n="quote.intro.lead">选择地板类型 → 配置每层结构与规格 → 提交联系信息，1 个工作日内获得专属报价。</p>
+        </div>
+
+        <div class="quote-layout">
+            <!-- 左侧：Tab + 配置表单 -->
+            <div class="quote-config reveal">
+                <div class="quote-tabs" role="tablist">
+                    <button type="button" class="quote-tab active" data-type="spc" data-i18n="quote.tab.spc">SPC 地板</button>
+                    <button type="button" class="quote-tab" data-type="lvt" data-i18n="quote.tab.lvt">LVT 地板</button>
+                    <button type="button" class="quote-tab" data-type="wpc" data-i18n="quote.tab.wpc">WPC 地板</button>
+                </div>
+
+                <div class="quote-layers" id="quoteLayers">
+                    <!-- JS 动态渲染：分层配置项 + 通用附加配置项 -->
+                </div>
+            </div>
+
+            <!-- 右侧：截面结构图（实时联动） -->
+            <div class="quote-diagram reveal reveal-delay-1">
+                <h3 class="quote-diagram__title" data-i18n="quote.diagram.title">截面结构图</h3>
+                <div class="quote-diagram__floor" id="quoteFloorName"></div>
+                <div class="quote-diagram__stack" id="quoteStack">
+                    <!-- JS 渲染分层结构 -->
+                </div>
+                <p class="quote-diagram__note" data-i18n="quote.diagram.note">注：示意图仅展示层结构顺序，不代表实际厚度比例。</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== 联系信息表单 ========== -->
+<section class="section" style="background:var(--color-bg-alt);">
+    <div class="container">
+        <div class="section-head reveal">
+            <span class="eyebrow" data-i18n="quote.contact.eyebrow">Contact Info</span>
+            <h2 data-i18n="quote.contact.title">提交联系信息 · 获取报价</h2>
+            <p class="lead" data-i18n="quote.contact.lead">请填写以下联系信息，连同上方配置一并提交，我们将在 1 个工作日内回复。</p>
+        </div>
+
+        <div class="contact-form reveal" style="max-width:880px; margin:0 auto;">
+            <form id="quoteForm" novalidate>
+                <div class="form-success" data-i18n="quote.form.success">✓ 感谢您的提交！配置摘要已生成，请保存或复制留底，我们将尽快与您联系。</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="qName"><span data-i18n="quote.form.name">姓名</span> <span class="req">*</span></label>
+                        <input type="text" id="qName" name="name" class="form-control" data-i18n-ph="quote.form.namePh" placeholder="您的姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="qCompany" data-i18n="quote.form.company">公司名称</label>
+                        <input type="text" id="qCompany" name="company" class="form-control" data-i18n-ph="quote.form.companyPh" placeholder="您的公司（选填）">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="qEmail"><span data-i18n="quote.form.email">邮箱</span> <span class="req">*</span></label>
+                        <input type="email" id="qEmail" name="email" class="form-control" data-i18n-ph="quote.form.emailPh" placeholder="您的电子邮箱" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="qPhone"><span data-i18n="quote.form.phone">电话 / WhatsApp</span> <span class="req">*</span></label>
+                        <input type="tel" id="qPhone" name="phone" class="form-control" data-i18n-ph="quote.form.phonePh" placeholder="含国家区号" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="qCountry" data-i18n="quote.form.country">国家 / 地区</label>
+                        <input type="text" id="qCountry" name="country" class="form-control" data-i18n-ph="quote.form.countryPh" placeholder="您所在的国家或地区">
+                    </div>
+                    <div class="form-group">
+                        <label for="qQuantity" data-i18n="quote.form.quantity">预计采购数量</label>
+                        <input type="text" id="qQuantity" name="quantity" class="form-control" data-i18n-ph="quote.form.quantityPh" placeholder="例如：5000 m²">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="qMessage"><span data-i18n="quote.form.message">补充说明</span> <span class="req">*</span></label>
+                    <textarea id="qMessage" name="message" class="form-control" rows="4" data-i18n-ph="quote.form.messagePh" placeholder="请描述项目情况、特殊需求或问题..." required></textarea>
+                </div>
+
+                <!-- 配置摘要预览 -->
+                <div class="form-group">
+                    <label data-i18n="quote.form.summary">配置摘要（可复制保存）</label>
+                    <textarea id="quoteSummary" class="form-control" rows="12" readonly></textarea>
+                    <div class="quote-summary-actions">
+                        <button type="button" class="btn btn--ghost" id="copySummary" data-i18n="quote.form.copy">复制摘要</button>
+                        <button type="button" class="btn btn--ghost" id="downloadSummary" data-i18n="quote.form.download">下载 .txt</button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn--primary btn--lg" data-text="提交报价请求" data-i18n="quote.form.submit" style="width:100%;">提交报价请求</button>
+                <p class="form-note" data-i18n="quote.form.note">* 我们承诺保护您的隐私，所填信息仅用于业务联系，不会泄露给第三方。</p>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ========== 页脚 ========== -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer__grid">
+            <div class="footer__col footer__about">
+                <a href="index.html" class="logo">
+                    <div class="logo__mark">茂</div>
+                    <div class="logo__text">
+                        <span class="zh" data-i18n="brand.name">东阳茂盛塑胶</span>
+                        <span class="en" data-i18n="brand.nameEn">MAOSHENG PLASTIC</span>
+                    </div>
+                </a>
+                <p data-i18n="footer.aboutDesc">东阳茂盛塑胶有限公司，专注高品质塑胶地板研发与制造，产品远销全球 30 多个国家和地区，是您值得信赖的长期合作伙伴。</p>
+                <div class="footer__social">
+                    <a href="javascript:void(0)" title="微信">微</a>
+                    <a href="javascript:void(0)" title="邮箱">✉</a>
+                    <a href="javascript:void(0)" title="电话">☎</a>
+                </div>
+            </div>
+            <div class="footer__col">
+                <h4 data-i18n="footer.quickNav">快速导航</h4>
+                <ul class="footer__links">
+                    <li><a href="index.html" data-i18n="nav.home">首页</a></li>
+                    <li><a href="products.html" data-i18n="nav.products">产品中心</a></li>
+                    <li><a href="cases.html" data-i18n="nav.cases">案例展示</a></li>
+                    <li><a href="about.html" data-i18n="nav.about">公司介绍</a></li>
+                    <li><a href="contact.html" data-i18n="nav.contact">联系我们</a></li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h4 data-i18n="footer.productSeries">产品系列</h4>
+                <ul class="footer__links">
+                    <li><a href="products.html" data-i18n="footer.dryback">干背式胶粘地板</a></li>
+                    <li><a href="products.html" data-i18n="footer.click">锁扣式 PVC 地板</a></li>
+                    <li><a href="products.html" data-i18n="footer.looselay">免胶铺装地板</a></li>
+                    <li><a href="products.html" data-i18n="footer.woodGrain">木纹系列</a></li>
+                    <li><a href="products.html" data-i18n="footer.stoneGrain">石纹系列</a></li>
+                </ul>
+            </div>
+            <div class="footer__col">
+                <h4 data-i18n="footer.contact">联系方式</h4>
+                <ul class="footer__contact">
+                    <li><span class="ico">📍</span><span data-i18n="footer.address">浙江省东阳市横店工业区<br>科兴路 17 号</span></li>
+                    <li><span class="ico">☎</span><span data-i18n="topbar.tel">+86-15957103098</span></li>
+                    <li><span class="ico">✉</span><span data-i18n="topbar.email">key630@gmail.com</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer__bottom">
+            <div data-i18n="footer.copyright">© 2006-2026 东阳茂盛塑胶有限公司 版权所有</div>
+            <div data-i18n="footer.tagline">专业塑胶地板制造商 · 产品通过 DIBT 认证</div>
+        </div>
+    </div>
+</footer>
+
+<div class="float-contact">
+    <a href="tel:+86-15957103098" data-i18n-attr="title:float.phone" title="电话咨询">☎</a>
+    <a href="#quoteForm" data-i18n-attr="title:float.message" title="在线留言">✉</a>
+</div>
+<button class="back-to-top" aria-label="回到顶部" data-i18n-attr="aria-label:backToTop">↑</button>
+
+<script src="js/i18n.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
