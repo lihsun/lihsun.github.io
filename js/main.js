@@ -1388,6 +1388,99 @@
     }
 
     /* ======================================================================
+       13. WhatsApp 二维码弹窗（footer 和浮动按钮的 WhatsApp 均触发）
+       ====================================================================== */
+    function initWhatsAppQR() {
+        var overlay = $("#waQrOverlay");
+        if (!overlay) return;
+
+        var closeBtn = $("#waQrClose");
+        /* footer 的 WhatsApp 按钮 + 浮动按钮区的 WhatsApp 按钮 */
+        var floatBtn = $("#floatWaBtn");
+        var footerBtn = $("#footerWaBtn");
+
+        function show(e) {
+            if (e) { e.preventDefault(); }
+            overlay.classList.add("show");
+        }
+        function hide() {
+            overlay.classList.remove("show");
+        }
+
+        if (floatBtn) floatBtn.addEventListener("click", show);
+        if (footerBtn) footerBtn.addEventListener("click", show);
+        if (closeBtn) closeBtn.addEventListener("click", hide);
+        /* 点击遮罩层关闭 */
+        overlay.addEventListener("click", function (e) {
+            if (e.target === overlay) hide();
+        });
+        /* ESC 键关闭 */
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && overlay.classList.contains("show")) hide();
+        });
+    }
+
+    /* ======================================================================
+       14. 微信二维码弹窗（footer 的微信按钮触发）
+       ====================================================================== */
+    function initWeChatQR() {
+        var overlay = $("#wechatQrOverlay");
+        if (!overlay) return;
+
+        var closeBtn = $("#wechatQrClose");
+        var footerBtn = $("#footerWechatBtn");
+
+        function show(e) {
+            if (e) { e.preventDefault(); }
+            overlay.classList.add("show");
+        }
+        function hide() {
+            overlay.classList.remove("show");
+        }
+
+        if (footerBtn) footerBtn.addEventListener("click", show);
+        if (closeBtn) closeBtn.addEventListener("click", hide);
+        /* 点击遮罩层关闭 */
+        overlay.addEventListener("click", function (e) {
+            if (e.target === overlay) hide();
+        });
+        /* ESC 键关闭 */
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && overlay.classList.contains("show")) hide();
+        });
+    }
+
+    /* ======================================================================
+       15. TikTok 二维码弹窗（footer 的 TikTok 按钮触发）
+       ====================================================================== */
+    function initTiktokQR() {
+        var overlay = $("#tiktokQrOverlay");
+        if (!overlay) return;
+
+        var closeBtn = $("#tiktokQrClose");
+        var footerBtn = $("#footerTiktokBtn");
+
+        function show(e) {
+            if (e) { e.preventDefault(); }
+            overlay.classList.add("show");
+        }
+        function hide() {
+            overlay.classList.remove("show");
+        }
+
+        if (footerBtn) footerBtn.addEventListener("click", show);
+        if (closeBtn) closeBtn.addEventListener("click", hide);
+        /* 点击遮罩层关闭 */
+        overlay.addEventListener("click", function (e) {
+            if (e.target === overlay) hide();
+        });
+        /* ESC 键关闭 */
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape" && overlay.classList.contains("show")) hide();
+        });
+    }
+
+    /* ======================================================================
        初始化
        ====================================================================== */
     function init() {
@@ -1403,6 +1496,9 @@
         initHeaderScroll();
         initQuoteConfigurator();  /* 自定义报价配置器（仅 quote.html 生效） */
         initMapSwitcher();        /* 地图切换器（仅 contact.html 生效） */
+        initWhatsAppQR();         /* WhatsApp 二维码弹窗 */
+        initWeChatQR();           /* 微信二维码弹窗 */
+        initTiktokQR();           /* TikTok 二维码弹窗 */
     }
 
     if (document.readyState === "loading") {
