@@ -1426,22 +1426,29 @@ textarea.form-control {
 .footer__bottom a:hover { color: var(--color-accent-light); }
 .footer__social {
     display: flex;
-    gap: 12px;
+    gap: 14px;
 }
 .footer__social a {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #c8d0d5;
-    font-size: 0.95rem;
+    font-size: 1.25rem;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.footer__social a svg {
+    width: 22px;
+    height: 22px;
 }
 .footer__social a:hover {
     background: var(--color-accent);
     color: #fff;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28);
 }
 
 /* ==========================================================================
@@ -2348,6 +2355,96 @@ textarea.form-control {
 [dir="rtl"] .stack-layer:nth-child(2) { border-right-color: #4a7c59; }
 [dir="rtl"] .stack-layer:nth-child(3) { border-right-color: #5a8fb3; }
 [dir="rtl"] .stack-layer:nth-child(4) { border-right-color: #b8895a; }
+
+/* ==========================================================================
+   二维码弹窗（WhatsApp / 微信共用）
+   ========================================================================== */
+.qr-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(19, 31, 37, 0.88);
+    z-index: 2100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transition);
+}
+.qr-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+.qr-popup {
+    position: relative;
+    background: var(--color-bg-alt);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 32px 36px 28px;
+    text-align: center;
+    max-width: 340px;
+    width: 100%;
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.qr-overlay.show .qr-popup {
+    transform: translateY(0) scale(1);
+}
+.qr-close {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: none;
+    color: var(--color-text-light);
+    font-size: 1.3rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+}
+.qr-close:hover {
+    background: var(--color-accent);
+    color: #fff;
+}
+.qr-title {
+    margin-bottom: 6px;
+    font-size: 1.15rem;
+    color: var(--color-primary);
+}
+.qr-hint {
+    font-size: 0.88rem;
+    color: var(--color-text-light);
+    margin-bottom: 18px;
+}
+.qr-img {
+    width: 220px;
+    height: 220px;
+    margin: 0 auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    display: block;
+}
+@media (max-width: 480px) {
+    .qr-popup {
+        padding: 26px 22px 22px;
+    }
+    .qr-img {
+        width: 180px;
+        height: 180px;
+    }
+}
+/* RTL 适配（阿拉伯语）：关闭按钮置于左侧 */
+[dir="rtl"] .qr-close {
+    right: auto;
+    left: 14px;
+}
 [dir="rtl"] .stack-layer:nth-child(5) { border-right-color: #8b6f9c; }
 [dir="rtl"] .stack-layer:nth-child(6) { border-right-color: #6b7a8f; }
 [dir="rtl"] .stack-layer__value {
