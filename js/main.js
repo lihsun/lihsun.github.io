@@ -1409,6 +1409,8 @@
 
         if (floatBtn) floatBtn.addEventListener("click", show);
         if (footerBtn) footerBtn.addEventListener("click", show);
+        var contactBtn = $("#contactWaBtn");
+        if (contactBtn) contactBtn.addEventListener("click", show);
         if (closeBtn) closeBtn.addEventListener("click", hide);
         /* 点击遮罩层关闭 */
         overlay.addEventListener("click", function (e) {
@@ -1439,6 +1441,8 @@
         }
 
         if (footerBtn) footerBtn.addEventListener("click", show);
+        var contactBtn = $("#contactWechatBtn");
+        if (contactBtn) contactBtn.addEventListener("click", show);
         if (closeBtn) closeBtn.addEventListener("click", hide);
         /* 点击遮罩层关闭 */
         overlay.addEventListener("click", function (e) {
@@ -1469,6 +1473,8 @@
         }
 
         if (footerBtn) footerBtn.addEventListener("click", show);
+        var contactBtn = $("#contactTiktokBtn");
+        if (contactBtn) contactBtn.addEventListener("click", show);
         if (closeBtn) closeBtn.addEventListener("click", hide);
         /* 点击遮罩层关闭 */
         overlay.addEventListener("click", function (e) {
