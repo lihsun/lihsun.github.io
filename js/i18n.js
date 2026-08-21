@@ -311,8 +311,8 @@
         "contact.faq6.t": "物流如何安排？", "contact.faq6.d": "公司距义乌仅 30 公里，物流网络发达，可协助安排海运、空运及清关等事宜。",
 
         /* 自定义报价配置 (quote) */
-        "quote.pageTitle": "自定义报价配置 - SPC/LVT/WPC 地板在线定制 | 东阳茂盛塑胶",
-        "quote.metaDesc": "东阳茂盛塑胶自定义地板报价配置 - 在线自定义 SPC/LVT/WPC 三种地板的每一层配置（UV涂层、耐磨层、装饰纸、基材等），实时生成截面结构图与配置摘要，提交后 1 个工作日内获得专属报价。",
+        "quote.pageTitle": "自定义报价配置 - SPC/LVT 地板在线定制 | 东阳茂盛塑胶",
+        "quote.metaDesc": "东阳茂盛塑胶自定义地板报价配置 - 在线自定义 SPC/LVT 两种地板的每一层配置（UV涂层、耐磨层、装饰纸、基材等），实时生成截面结构图与配置摘要，提交后 1 个工作日内获得专属报价。",
         "quote.banner.title": "自定义报价配置",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "按需定制 · 三步获取专属报价",
@@ -717,8 +717,8 @@
         "contact.faq6.t": "How is logistics arranged?", "contact.faq6.d": "Only 30 km from Yiwu with a well-developed logistics network, we can assist with sea, air freight and customs clearance.",
 
         /* Custom Quote Configurator (quote) */
-        "quote.pageTitle": "Custom Quote Configurator - SPC/LVT/WPC Flooring Online Customization | Maosheng Plastic",
-        "quote.metaDesc": "Maosheng Plastic custom flooring quote configurator - customize each layer of SPC/LVT/WPC flooring online (UV coating, wear layer, deco paper, core, etc.), generate a real-time cross-section diagram and configuration summary, and receive a dedicated quote within 1 business day after submission.",
+        "quote.pageTitle": "Custom Quote Configurator - SPC/LVT Flooring Online Customization | Maosheng Plastic",
+        "quote.metaDesc": "Maosheng Plastic custom flooring quote configurator - customize each layer of SPC/LVT flooring online (UV coating, wear layer, deco paper, core, etc.), generate a real-time cross-section diagram and configuration summary, and receive a dedicated quote within 1 business day after submission.",
         "quote.banner.title": "Custom Quote Configurator",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "On-Demand Customization · Get Your Dedicated Quote in 3 Steps",
@@ -1119,8 +1119,8 @@
         "contact.faq6.t": "¿Logística?", "contact.faq6.d": "A 30 km de Yiwu, red desarrollada; ayudamos con marítimo, aéreo y aduana.",
 
         /* Configurador de presupuesto personalizado (quote) */
-        "quote.pageTitle": "Configurador de Presupuesto Personalizado - SPC/LVT/WPC Suelos Online | Maosheng Plastic",
-        "quote.metaDesc": "Configurador de presupuesto personalizado de Maosheng Plastic - personalice online cada capa de los suelos SPC/LVT/WPC (capa UV, capa de desgaste, papel decorativo, núcleo, etc.), genere un diagrama de sección y un resumen de configuración en tiempo real, y reciba un presupuesto dedicado en 1 día laborable tras el envío.",
+        "quote.pageTitle": "Configurador de Presupuesto Personalizado - SPC/LVT Suelos Online | Maosheng Plastic",
+        "quote.metaDesc": "Configurador de presupuesto personalizado de Maosheng Plastic - personalice online cada capa de los suelos SPC/LVT (capa UV, capa de desgaste, papel decorativo, núcleo, etc.), genere un diagrama de sección y un resumen de configuración en tiempo real, y reciba un presupuesto dedicado en 1 día laborable tras el envío.",
         "quote.banner.title": "Configurador de Presupuesto Personalizado",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "Personalización bajo demanda · Obtenga su presupuesto en 3 pasos",
@@ -1516,8 +1516,8 @@
         "contact.faq6.t": "Logistik?", "contact.faq6.d": "30 km von Yiwu, Netz entwickelt; See-, Luftfracht, Zoll.",
 
         /* Individuelle Angebot-Konfiguration (quote) */
-        "quote.pageTitle": "Individuelle Angebot-Konfiguration - SPC/LVT/WPC Boden online anpassen | Maosheng Plastic",
-        "quote.metaDesc": "Individuelle Boden-Angebotskonfiguration von Maosheng Plastic - passen Sie online jede Schicht von SPC/LVT/WPC Böden an (UV-Schicht, Verschleißschicht, Dekorpapier, Träger etc.), erstellen Sie in Echtzeit einen Querschnitt und eine Konfigurationszusammenfassung, und erhalten Sie nach Absenden innerhalb von 1 Werktag ein individuelles Angebot.",
+        "quote.pageTitle": "Individuelle Angebot-Konfiguration - SPC/LVT Boden online anpassen | Maosheng Plastic",
+        "quote.metaDesc": "Individuelle Boden-Angebotskonfiguration von Maosheng Plastic - passen Sie online jede Schicht von SPC/LVT Böden an (UV-Schicht, Verschleißschicht, Dekorpapier, Träger etc.), erstellen Sie in Echtzeit einen Querschnitt und eine Konfigurationszusammenfassung, und erhalten Sie nach Absenden innerhalb von 1 Werktag ein individuelles Angebot.",
         "quote.banner.title": "Individuelle Angebot-Konfiguration",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "Auftragsbezogene Anpassung · Ihr individuelles Angebot in 3 Schritten",
@@ -1912,8 +1912,8 @@
         "contact.faq6.t": "Логистика?", "contact.faq6.d": "30 км от Иу, развитая сеть; море, воздух, таможня.",
 
         /* Конфигуратор индивидуального расчёта (quote) */
-        "quote.pageTitle": "Конфигуратор индивидуального расчёта - SPC/LVT/WPC напольные покрытия онлайн | Maosheng Plastic",
-        "quote.metaDesc": "Конфигуратор индивидуального расчёта напольных покрытий Maosheng Plastic - настройте онлайн каждый слой покрытий SPC/LVT/WPC (УФ-слой, износостойкий слой, декоративная бумага, основа и т. д.), в реальном времени создавайте схему сечения и сводку конфигурации, и получите индивидуальное предложение в течение 1 рабочего дня после отправки.",
+        "quote.pageTitle": "Конфигуратор индивидуального расчёта - SPC/LVT напольные покрытия онлайн | Maosheng Plastic",
+        "quote.metaDesc": "Конфигуратор индивидуального расчёта напольных покрытий Maosheng Plastic - настройте онлайн каждый слой покрытий SPC/LVT (УФ-слой, износостойкий слой, декоративная бумага, основа и т. д.), в реальном времени создавайте схему сечения и сводку конфигурации, и получите индивидуальное предложение в течение 1 рабочего дня после отправки.",
         "quote.banner.title": "Конфигуратор индивидуального расчёта",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "Индивидуальная настройка · Получите расчёт за 3 шага",
@@ -2308,8 +2308,8 @@
         "contact.faq6.t": "Lojistik?", "contact.faq6.d": "Yiwu'ya 30 km, gelişmiş ağ; deniz, hava, gümrük.",
 
         /* Özel teklif yapılandırıcısı (quote) */
-        "quote.pageTitle": "Özel Teklif Yapılandırıcı - SPC/LVT/WPC Zemin Çevrimiçi Özelleştirme | Maosheng Plastic",
-        "quote.metaDesc": "Maosheng Plastic özel zemin teklif yapılandırıcısı - SPC/LVT/WPC zeminlerin her katmanını çevrimiçi özelleştirin (UV katman, aşınma katmanı, dekor kağıdı, çekirdek vb.), gerçek zamanlı kesit diyagramı ve yapılandırma özeti oluşturun, gönderimden sonra 1 iş günü içinde özel teklif alın.",
+        "quote.pageTitle": "Özel Teklif Yapılandırıcı - SPC/LVT Zemin Çevrimiçi Özelleştirme | Maosheng Plastic",
+        "quote.metaDesc": "Maosheng Plastic özel zemin teklif yapılandırıcısı - SPC/LVT zeminlerin her katmanını çevrimiçi özelleştirin (UV katman, aşınma katmanı, dekor kağıdı, çekirdek vb.), gerçek zamanlı kesit diyagramı ve yapılandırma özeti oluşturun, gönderimden sonra 1 iş günü içinde özel teklif alın.",
         "quote.banner.title": "Özel Teklif Yapılandırıcı",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "Talebe Özel Üretim · 3 Adımda Özel Teklifinizi Alın",
@@ -2704,8 +2704,8 @@
         "contact.faq6.t": "اللوجستيات؟", "contact.faq6.d": "30 كم من ييوو، شبكة متطورة؛ بحر، جو، جمارك.",
 
         /* مُكوِّن عرض أسعار مخصص (quote) */
-        "quote.pageTitle": "مُكوِّن عرض أسعار مخصص - SPC/LVT/WPC أرضيات تخصيص عبر الإنترنت | Maosheng Plastic",
-        "quote.metaDesc": "مُكوِّن عرض أسعار الأرضيات المخصص من Maosheng Plastic - خصص عبر الإنترنت كل طبقة من أرضيات SPC/LVT/WPC (طبقة UV، طبقة التآكل Wear Layer، ورق الزخرفة Deco Paper، اللب الأساسي، إلخ)، أنشئ مخطط المقطع العرضي وملخص التكوين في الوقت الفعلي، واحصل على عرض أسعار مخصص خلال يوم عمل واحد بعد الإرسال.",
+        "quote.pageTitle": "مُكوِّن عرض أسعار مخصص - SPC/LVT أرضيات تخصيص عبر الإنترنت | Maosheng Plastic",
+        "quote.metaDesc": "مُكوِّن عرض أسعار الأرضيات المخصص من Maosheng Plastic - خصص عبر الإنترنت كل طبقة من أرضيات SPC/LVT (طبقة UV، طبقة التآكل Wear Layer، ورق الزخرفة Deco Paper، اللب الأساسي، إلخ)، أنشئ مخطط المقطع العرضي وملخص التكوين في الوقت الفعلي، واحصل على عرض أسعار مخصص خلال يوم عمل واحد بعد الإرسال.",
         "quote.banner.title": "مُكوِّن عرض أسعار مخصص",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "تخصيص حسب الطلب · احصل على عرض الأسعار الخاص بك في 3 خطوات",
@@ -3100,8 +3100,8 @@
         "contact.faq6.t": "Logistics?", "contact.faq6.d": "30 km từ Yiwu, mạng phát triển; biển, hàng không, hải quan.",
 
         /* Trình cấu hình báo giá tùy chỉnh (quote) */
-        "quote.pageTitle": "Trình Cấu Hình Báo Giá Tùy Chỉnh - SPC/LVT/WPC Sàn Trực Tuyến | Maosheng Plastic",
-        "quote.metaDesc": "Trình cấu hình báo giá sàn tùy chỉnh của Maosheng Plastic - tùy chỉnh trực tuyến từng lớp của sàn SPC/LVT/WPC (lớp UV, lớp mài mòn, giấy trang trí, lõi, v.v.), tạo sơ đồ mặt cắt và tóm tắt cấu hình theo thời gian thực, nhận báo giá riêng trong 1 ngày làm việc sau khi gửi.",
+        "quote.pageTitle": "Trình Cấu Hình Báo Giá Tùy Chỉnh - SPC/LVT Sàn Trực Tuyến | Maosheng Plastic",
+        "quote.metaDesc": "Trình cấu hình báo giá sàn tùy chỉnh của Maosheng Plastic - tùy chỉnh trực tuyến từng lớp của sàn SPC/LVT (lớp UV, lớp mài mòn, giấy trang trí, lõi, v.v.), tạo sơ đồ mặt cắt và tóm tắt cấu hình theo thời gian thực, nhận báo giá riêng trong 1 ngày làm việc sau khi gửi.",
         "quote.banner.title": "Trình Cấu Hình Báo Giá Tùy Chỉnh",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "Tùy chỉnh theo nhu cầu · Nhận báo giá riêng trong 3 bước",
@@ -3496,8 +3496,8 @@
         "contact.faq6.t": "Logistique ?", "contact.faq6.d": "30 km de Yiwu, réseau développé ; maritime, aérien, douane.",
 
         /* Configurateur de devis personnalisé (quote) */
-        "quote.pageTitle": "Configurateur de Devis Personnalisé - SPC/LVT/WPC Sols en Ligne | Maosheng Plastic",
-        "quote.metaDesc": "Configurateur de devis de sol personnalisé Maosheng Plastic - personnalisez en ligne chaque couche des sols SPC/LVT/WPC (couche UV, couche d'usure, papier décoratif, âme, etc.), générez en temps réel un schéma de coupe et un récapitulatif de configuration, et recevez un devis dédié sous 1 jour ouvré après envoi.",
+        "quote.pageTitle": "Configurateur de Devis Personnalisé - SPC/LVT Sols en Ligne | Maosheng Plastic",
+        "quote.metaDesc": "Configurateur de devis de sol personnalisé Maosheng Plastic - personnalisez en ligne chaque couche des sols SPC/LVT (couche UV, couche d'usure, papier décoratif, âme, etc.), générez en temps réel un schéma de coupe et un récapitulatif de configuration, et recevez un devis dédié sous 1 jour ouvré après envoi.",
         "quote.banner.title": "Configurateur de Devis Personnalisé",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "Personnalisation à la demande · Obtenez votre devis en 3 étapes",
@@ -3894,8 +3894,8 @@
         "contact.faq6.t": "Logística?", "contact.faq6.d": "30 km de Yiwu, rede desenvolvida; marítimo, aéreo, alfândega.",
 
         /* Configurador de orçamento personalizado (quote) */
-        "quote.pageTitle": "Configurador de Orçamento Personalizado - SPC/LVT/WPC Pisos Online | Maosheng Plastic",
-        "quote.metaDesc": "Configurador de orçamento de piso personalizado Maosheng Plastic - personalize online cada camada dos pisos SPC/LVT/WPC (camada UV, camada de desgaste, papel decorativo, núcleo, etc.), gere em tempo real um diagrama de seção e um resumo de configuração, e receba um orçamento dedicado em 1 dia útil após o envio.",
+        "quote.pageTitle": "Configurador de Orçamento Personalizado - SPC/LVT Pisos Online | Maosheng Plastic",
+        "quote.metaDesc": "Configurador de orçamento de piso personalizado Maosheng Plastic - personalize online cada camada dos pisos SPC/LVT (camada UV, camada de desgaste, papel decorativo, núcleo, etc.), gere em tempo real um diagrama de seção e um resumo de configuração, e receba um orçamento dedicado em 1 dia útil após o envio.",
         "quote.banner.title": "Configurador de Orçamento Personalizado",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "Personalização sob demanda · Obtenha seu orçamento em 3 etapas",
@@ -4290,8 +4290,8 @@
         "contact.faq6.t": "Logistica?", "contact.faq6.d": "30 km da Yiwu, rete sviluppata; mare, aereo, dogana.",
 
         /* Configuratore di preventivo personalizzato (quote) */
-        "quote.pageTitle": "Configuratore di Preventivo Personalizzato - SPC/LVT/WPC Pavimentazioni Online | Maosheng Plastic",
-        "quote.metaDesc": "Configuratore di preventivo pavimento personalizzato Maosheng Plastic - personalizza online ogni strato dei pavimenti SPC/LVT/WPC (strato UV, strato di usura, carta decorativa, anima, ecc.), genera in tempo reale un diagramma di sezione e un riepilogo di configurazione, e ricevi un preventivo dedicato entro 1 giorno lavorativo dopo l'invio.",
+        "quote.pageTitle": "Configuratore di Preventivo Personalizzato - SPC/LVT Pavimentazioni Online | Maosheng Plastic",
+        "quote.metaDesc": "Configuratore di preventivo pavimento personalizzato Maosheng Plastic - personalizza online ogni strato dei pavimenti SPC/LVT (strato UV, strato di usura, carta decorativa, anima, ecc.), genera in tempo reale un diagramma di sezione e un riepilogo di configurazione, e ricevi un preventivo dedicato entro 1 giorno lavorativo dopo l'invio.",
         "quote.banner.title": "Configuratore di Preventivo Personalizzato",
         "quote.intro.eyebrow": "Custom Quote",
         "quote.intro.title": "Personalizzazione su richiesta · Ottieni il tuo preventivo in 3 passaggi",

@@ -721,79 +721,7 @@
                 }
             ]
         },
-        wpc: {
-            nameKey: "quote.tab.wpc",
-            layers: [
-                {
-                    key: "uvCoating", nameKey: "quote.layer.uvCoating", type: "radio",
-                    options: [
-                        { value: "matte",     labelKey: "quote.opt.matte" },
-                        { value: "semiMatte", labelKey: "quote.opt.semiMatte" },
-                        { value: "glossy",    labelKey: "quote.opt.glossy" }
-                    ],
-                    defaultValue: "semiMatte"
-                },
-                {
-                    key: "wearLayer", nameKey: "quote.layer.wearLayer", type: "radio",
-                    options: [
-                        { value: "0.2mm",  labelKey: "quote.opt.wl.0.2" },
-                        { value: "0.3mm",  labelKey: "quote.opt.wl.0.3" },
-                        { value: "0.5mm",  labelKey: "quote.opt.wl.0.5" },
-                        { value: "0.55mm", labelKey: "quote.opt.wl.0.55" },
-                        { value: "0.7mm",  labelKey: "quote.opt.wl.0.7" }
-                    ],
-                    defaultValue: "0.3mm"
-                },
-                {
-                    key: "decoPaper", nameKey: "quote.layer.decoPaper", type: "radio",
-                    options: [
-                        { value: "woodGrain",   labelKey: "quote.opt.woodGrain" },
-                        { value: "stoneGrain",  labelKey: "quote.opt.stoneGrain" },
-                        { value: "concrete",    labelKey: "quote.opt.concrete" },
-                        { value: "herringbone", labelKey: "quote.opt.herringbone" },
-                        { value: "chevron",     labelKey: "quote.opt.chevron" }
-                    ],
-                    defaultValue: "woodGrain"
-                },
-                {
-                    key: "middleLayer", nameKey: "quote.layer.middleLayer", type: "radio",
-                    options: [
-                        { value: "pvc05",   labelKey: "quote.opt.ml.pvc05" },
-                        { value: "pvc10",   labelKey: "quote.opt.ml.pvc10" },
-                        { value: "pvcgf10", labelKey: "quote.opt.ml.pvcgf10" }
-                    ],
-                    defaultValue: "pvc10"
-                },
-                {
-                    key: "wpcLayer", nameKey: "quote.layer.wpcLayer", type: "radio",
-                    options: [
-                        { value: "4.0mm", labelKey: "quote.opt.thk.4.0" },
-                        { value: "4.5mm", labelKey: "quote.opt.thk.4.5" },
-                        { value: "5.0mm", labelKey: "quote.opt.thk.5.0" },
-                        { value: "5.5mm", labelKey: "quote.opt.thk.5.5" },
-                        { value: "6.0mm", labelKey: "quote.opt.thk.6.0" },
-                        { value: "6.5mm", labelKey: "quote.opt.thk.6.5" },
-                        { value: "7.0mm", labelKey: "quote.opt.thk.7.0" }
-                    ],
-                    defaultValue: "5.5mm"
-                },
-                {
-                    key: "baseLayer", nameKey: "quote.layer.baseLayer", type: "radio",
-                    options: [
-                        { value: "cork10", labelKey: "quote.opt.base.cork10" },
-                        { value: "cork15", labelKey: "quote.opt.base.cork15" },
-                        { value: "cork20", labelKey: "quote.opt.base.cork20" },
-                        { value: "ixpe10", labelKey: "quote.opt.base.ixpe10" },
-                        { value: "ixpe15", labelKey: "quote.opt.base.ixpe15" },
-                        { value: "ixpe20", labelKey: "quote.opt.base.ixpe20" },
-                        { value: "eva10",  labelKey: "quote.opt.base.eva10" },
-                        { value: "eva15",  labelKey: "quote.opt.base.eva15" },
-                        { value: "eva20",  labelKey: "quote.opt.base.eva20" }
-                    ],
-                    defaultValue: "ixpe15"
-                }
-            ]
-        }
+
     };
 
     /* 通用附加配置项（三种地板共通） */
@@ -860,8 +788,244 @@
     /* 当前状态 */
     var quoteState = {
         floorType: "spc",
-        config: { spc: {}, lvt: {}, wpc: {}, common: {} }
+        config: { spc: {}, lvt: {}, common: {} }
     };
+
+    /* ======================================================================
+       估算价模型（实时参考价 · FOB 口岸价）
+       --------------------------------------------------------------
+       数据来源（公开市场 / 同行报价 / 海关提单）：
+       - SPC：越南/中国出口商公开报价 $4.75–8.75/㎡、深度压纹 SPC $5–7/㎡、
+         4mm 中国产 SPC 越南进口提单单价约 $4.2/㎡（Volza HSCode 68109900）
+       - LVT：中国 FOB 指南 4mm click 0.3mm ≈ $3.5–4.5/㎡、2.5mm dryback 0.3mm ≈
+         $2.8–3.6/㎡、0.5–0.7mm 商用 ≈ $4.5–8.5/㎡；上海 3C 公开区间 $3–5/㎡
+       - 汇率：1 USD ≈ 7.25 CNY（会随市场波动，此处取静态参考值）
+       模型按「基础工序 + 各层材质加价」累加计费，仅作实时估价，最终以正式报价单为准。
+       ====================================================================== */
+    var QUOTE_USD_TO_RMB = 7.25;
+
+    var QUOTE_PRICE = {
+        spc: {
+            base: 1.00,                         // 基础工序 / 品牌加工费
+            thicknessUnit: 0.55,                // 石晶基材每 mm 成本
+            wear: { "0.07mm":0, "0.1mm":0.15, "0.2mm":0.35, "0.3mm":0.6, "0.5mm":1.1, "0.55mm":1.25, "0.7mm":1.6 },
+            uv:   { matte:0.2, semiMatte:0.2, glossy:0.2, crystal:0.5 },
+            density: { "1900":0, "2000":0.15, "2100":0.3, "2200":0.45 }
+        },
+        lvt: {
+            base: 0.90,                         // 基础工序 / 品牌加工费
+            middle: { "1.0mm":1.1, "2.0mm":1.9, "3.0mm":2.7 },   // 中层 PVC（厚度代理）
+            wear: { "0.1mm":0.15, "0.2mm":0.35, "0.3mm":0.6, "0.5mm":1.1, "0.55mm":1.25, "0.7mm":1.6, "1.0mm":2.2 },
+            uv:   { matte:0.2, semiMatte:0.2, glossy:0.2, crystal:0.5 },
+            glassfiber: { single40:0.15, single100:0.25, single120:0.35, dual100:0.5 },
+            baseLayer: { dryback:0, looselay:0.6, ixpe15:0.5, eva15:0.4, cork15:0.7 }
+        },
+        common: {
+            surface: { eir:0.3, deepEmbossed:0.4, crystal:0.5, smooth:0.1, handScraped:0.6, wireBrushed:0.5 },
+            bevel:   { square:0, micro:0.1, painted:0.25, vgroove:0.3 },
+            click:   { unilin:0.2, valinge2g:0.2, valinge5g:0.35, valinge5gi:0.4, i4f:0.45 },
+            size:    { "152x914":0, "178x1220":0.1, "180x1220":0.12, "228x1220":0.2, "228x1520":0.25, "6x36":0, "7x48":0.05, "9x60":0.1 },
+            package: { "1.46":0, "1.63":0.05, "2.19":0.1, "2.97":0.15 }
+        }
+    };
+
+    /* 价格卡片多语言文案（覆盖站点支持的全部语言；缺失时回退中文） */
+    var QUOTE_PRICE_I18N = {
+        zh: {
+            title: "实时估算价 · FOB 口岸价",
+            unit: "每平方米",
+            usd: "美元 USD",
+            rmb: "人民币 CNY",
+            breakdown: "价格构成",
+            base: "基础工序",
+            total: "合计",
+            note: "参考中国/越南出口商公开报价及海关提单数据（FOB 口岸价），仅供实时估价，最终以正式报价单为准。汇率 1 USD ≈ 7.25 CNY。",
+            ref: "估算参考价（FOB）"
+        },
+        en: {
+            title: "Estimated Price · FOB",
+            unit: "per sqm",
+            usd: "US Dollar",
+            rmb: "Chinese Yuan",
+            breakdown: "Price Breakdown",
+            base: "Base / Process",
+            total: "Total",
+            note: "Reference: public export quotes from China/Vietnam suppliers and customs bill-of-lading data (FOB port price). For indication only; final quote on official quotation. Rate: 1 USD ≈ 7.25 CNY.",
+            ref: "Estimated Reference (FOB)"
+        },
+        es: {
+            title: "Precio Estimado · FOB",
+            unit: "por m²",
+            usd: "Dólar EE. UU.",
+            rmb: "Yuan chino",
+            breakdown: "Desglose de precio",
+            base: "Base / Proceso",
+            total: "Total",
+            note: "Referencia: cotizaciones públicas de exportadores de China/Vietnam y datos de conocimiento de embarque aduanero (precio FOB). Solo para referencia; cotización final en cotización oficial. Tipo: 1 USD ≈ 7.25 CNY.",
+            ref: "Precio de referencia (FOB)"
+        },
+        de: {
+            title: "Geschätzter Preis · FOB",
+            unit: "pro m²",
+            usd: "US-Dollar",
+            rmb: "Chinesischer Yuan",
+            breakdown: "Preisaufschlüsselung",
+            base: "Basis / Verarbeitung",
+            total: "Gesamt",
+            note: "Referenz: öffentliche Exportangebote von China-/Vietnam-Lieferanten und Zolldokumente (FOB-Hafenpreis). Nur als Indikation; finales Angebot in offizieller Offerte. Kurs: 1 USD ≈ 7.25 CNY.",
+            ref: "Referenzpreis (FOB)"
+        },
+        fr: {
+            title: "Prix Estimé · FOB",
+            unit: "par m²",
+            usd: "Dollar US",
+            rmb: "Yuan chinois",
+            breakdown: "Détail du prix",
+            base: "Base / Procédé",
+            total: "Total",
+            note: "Référence : devis d'exportation publics de fournisseurs Chine/Vietnam et données de connaissement douanier (prix FOB). Indicatif uniquement ; devis final sur devis officiel. Taux : 1 USD ≈ 7.25 CNY.",
+            ref: "Prix de référence (FOB)"
+        },
+        pt: {
+            title: "Preço Estimado · FOB",
+            unit: "por m²",
+            usd: "Dólar EUA",
+            rmb: "Yuan chinês",
+            breakdown: "Detalhamento",
+            base: "Base / Processo",
+            total: "Total",
+            note: "Referência: cotações públicas de exportadores da China/Vietnã e dados de conhecimento de embarque aduaneiro (preço FOB). Apenas indicativo; cotação final em cotação oficial. Câmbio: 1 USD ≈ 7.25 CNY.",
+            ref: "Preço de referência (FOB)"
+        },
+        it: {
+            title: "Prezzo Stimato · FOB",
+            unit: "per m²",
+            usd: "Dollaro USA",
+            rmb: "Yuan cinese",
+            breakdown: "Dettaglio prezzo",
+            base: "Base / Lavorazione",
+            total: "Totale",
+            note: "Riferimento: preventivi di esportazione pubblici di fornitori Cina/Vietnam e dati di polizza di carico doganale (prezzo FOB). Solo indicativo; preventivo finale su quotazione ufficiale. Tasso: 1 USD ≈ 7.25 CNY.",
+            ref: "Prezzo di riferimento (FOB)"
+        },
+        ru: {
+            title: "Расчётная Цена · FOB",
+            unit: "за м²",
+            usd: "Доллар США",
+            rmb: "Китайский юань",
+            breakdown: "Структура цены",
+            base: "База / Процесс",
+            total: "Итого",
+            note: "Справка: публичные экспортные прайсы поставщиков из Китая/Вьетнама и данные таможенных коносаментов (цена FOB). Только для оценки; окончательная цена в официальной смете. Курс: 1 USD ≈ 7.25 CNY.",
+            ref: "Ориентировочная цена (FOB)"
+        },
+        tr: {
+            title: "Tahmini Fiyat · FOB",
+            unit: "m² başına",
+            usd: "ABD Doları",
+            rmb: "Çin Yuanı",
+            breakdown: "Fiyat Dağılımı",
+            base: "Temel / İşlem",
+            total: "Toplam",
+            note: "Referans: Çin/Vietnam tedarikçilerinin açık ihracat teklifleri ve gümrük konşimento verileri (FOB liman fiyatı). Yalnızca gösterge; kesin fiyat resmi teklifte. Kur: 1 USD ≈ 7.25 CNY.",
+            ref: "Tahmini referans (FOB)"
+        },
+        ar: {
+            title: "السعر التقديري · FOB",
+            unit: "لكل م²",
+            usd: "دولار أمريكي",
+            rmb: "اليوان الصيني",
+            breakdown: "تفصيل السعر",
+            base: "أساس / معالجة",
+            total: "الإجمالي",
+            note: "مرجع: أسعار تصدير عامة من موردي الصين/فيتنام وبيانات بوليصة الشحن الجمركية (سعر FOB). للاسترشاد فقط؛ السعر النهائي في عرض السعر الرسمي. السعر: 1 USD ≈ 7.25 CNY.",
+            ref: "السعر المرجعي (FOB)"
+        },
+        vi: {
+            title: "Giá Ước Tính · FOB",
+            unit: "mỗi m²",
+            usd: "Đô la Mỹ",
+            rmb: "Nhân dân tệ",
+            breakdown: "Cơ cấu giá",
+            base: "Cơ sở / Quy trình",
+            total: "Tổng cộng",
+            note: "Tham khảo: báo giá xuất khẩu công khai từ nhà cung cấp Trung Quốc/Việt Nam và dữ liệu vận đơn hải quan (giá FOB). Chỉ để ước tính; báo giá cuối cùng theo bảng báo giá chính thức. Tỷ giá: 1 USD ≈ 7.25 CNY.",
+            ref: "Giá tham khảo (FOB)"
+        }
+    };
+
+    function pp(key) {
+        var d = QUOTE_PRICE_I18N[CURRENT_LANG] || QUOTE_PRICE_I18N.zh;
+        return d[key] || QUOTE_PRICE_I18N.zh[key] || key;
+    }
+
+    /* 计算当前配置的估算价（USD / ㎡，含构成明细） */
+    function quoteCalcPrice() {
+        var ft = quoteState.floorType;
+        var c = quoteState.config[ft];
+        var P = QUOTE_PRICE[ft];
+        var cm = QUOTE_PRICE.common;
+        var items = [];
+        var total = 0;
+        function add(label, val) {
+            val = val || 0;
+            total += val;
+            items.push({ label: label, val: val });
+        }
+
+        if (ft === "spc") {
+            add(pp("base"), P.base);
+            add(I18N.t(CURRENT_LANG, "quote.layer.spcCore.thickness"),
+                parseFloat(c["spcCore.thickness"]) * P.thicknessUnit);
+            add(I18N.t(CURRENT_LANG, "quote.layer.wearLayer"), P.wear[c["wearLayer"]]);
+            add(I18N.t(CURRENT_LANG, "quote.layer.uvCoating"), P.uv[c["uvCoating"]]);
+            add(I18N.t(CURRENT_LANG, "quote.layer.spcCore.density"), P.density[c["spcCore.density"]]);
+        } else {
+            add(pp("base"), P.base);
+            add(I18N.t(CURRENT_LANG, "quote.layer.middleLayer"), P.middle[c["middleLayer"]]);
+            add(I18N.t(CURRENT_LANG, "quote.layer.wearLayer"), P.wear[c["wearLayer"]]);
+            add(I18N.t(CURRENT_LANG, "quote.layer.uvCoating"), P.uv[c["uvCoating"]]);
+            add(I18N.t(CURRENT_LANG, "quote.layer.glassFiber"), P.glassfiber[c["glassFiber"]]);
+            add(I18N.t(CURRENT_LANG, "quote.layer.baseLayer"), P.baseLayer[c["baseLayer"]]);
+        }
+        /* 通用附加项（SPC / LVT 共通） */
+        add(I18N.t(CURRENT_LANG, "quote.common.surface"), cm.surface[c.surface]);
+        add(I18N.t(CURRENT_LANG, "quote.common.bevel"), cm.bevel[c.bevel]);
+        add(I18N.t(CURRENT_LANG, "quote.common.click"), cm.click[c.click]);
+        add(I18N.t(CURRENT_LANG, "quote.common.size"), cm.size[c.size]);
+        add(I18N.t(CURRENT_LANG, "quote.common.package"), cm.package[c.package]);
+
+        return { items: items, usd: total, rmb: total * QUOTE_USD_TO_RMB };
+    }
+
+    /* 渲染估算价卡片 */
+    function quoteRenderPrice() {
+        var box = $("#quotePrice");
+        if (!box) return;
+        var data = quoteCalcPrice();
+        $("#qpTitle").textContent = pp("title");
+        $("#qpUsdLabel").textContent = pp("usd");
+        $("#qpRmbLabel").textContent = pp("rmb");
+        $("#qpUsd").textContent = "$" + data.usd.toFixed(2);
+        $("#qpRmb").textContent = "¥" + data.rmb.toFixed(2);
+        $("#qpUnit").textContent = pp("unit");
+        $("#qpNote").textContent = pp("note");
+
+        var bh = '<div class="quote-price__bd-title">' + pp("breakdown") + '</div>' +
+                 '<div class="quote-price__bd-list">';
+        data.items.forEach(function (it) {
+            bh += '<div class="quote-price__bd-row">' +
+                   '<span>' + it.label + '</span>' +
+                   '<span>$' + it.val.toFixed(2) + '</span>' +
+                   '</div>';
+        });
+        bh += '<div class="quote-price__bd-row quote-price__bd-total">' +
+               '<span>' + pp("total") + '</span>' +
+               '<span>$' + data.usd.toFixed(2) + '</span>' +
+               '</div>';
+        bh += '</div>';
+        $("#qpBreakdown").innerHTML = bh;
+    }
 
     /* 初始化默认值 */
     function quoteInitDefaults() {
@@ -979,6 +1143,7 @@
                     '</div>';
         });
         stack.innerHTML = html;
+        quoteRenderPrice();
     }
 
     /* 处理配置项变化 */
@@ -1048,6 +1213,12 @@
             var v = quoteState.config.common[item.key];
             lines.push("- " + I18N.t(CURRENT_LANG, item.nameKey) + ": " + quoteGetOptionLabel(item, v));
         });
+        lines.push("");
+        /* 估算参考价（FOB 口岸价，双币） */
+        var pr = quoteCalcPrice();
+        lines.push("【" + pp("ref") + "】");
+        lines.push(pp("usd") + ": $" + pr.usd.toFixed(2) + " / " + pp("unit"));
+        lines.push(pp("rmb") + ": ¥" + pr.rmb.toFixed(2) + " / " + pp("unit"));
         lines.push("");
         lines.push("【" + I18N.t(CURRENT_LANG, "quote.summary.contactInfo") + "】");
         var form = $("#quoteForm");
@@ -1257,30 +1428,19 @@
     }
 
     /* ======================================================================
-       12. 地图切换器（仅 contact.html 生效）——中文用百度地图，其他语言用谷歌地图
+       12. 地图（仅 contact.html 生效）——全语言统一使用谷歌地图（iframe embed，无需 API Key）
        ====================================================================== */
-
-    /* ★★★ 百度地图开发者密钥(AK) —— 请到 https://lbsyun.baidu.com/ 免费注册后替换 ★★★
-       注册步骤：
-       1. 访问 https://lbsyun.baidu.com/ → 登录百度账号
-       2. 控制台 → 应用管理 → 创建应用
-       3. 应用类型选 "浏览器端" → 白名单填入域名（本地测试填 localhost）
-       4. 复制 AK 填入下方
-       注意：谷歌地图无需密钥（使用 iframe embed 方式）
-    */
-    var BAIDU_KEY = "YOUR_BAIDU_KEY";
 
     function initMapSwitcher() {
         var mapFrame = $("#mapFrame");
-        var bmapContainer = $("#mapContainerBMap");
-        if (!mapFrame && !bmapContainer) return;  /* 仅 contact.html 有这些元素 */
+        if (!mapFrame) return;  /* 仅 contact.html 有该元素 */
 
         var mapLink = $("#mapLink");
 
         /* 公司信息 */
-        var COMPANY_ADDR = "浙江省东阳市横店工业区科兴路17号";
         var COMPANY_NAME = "东阳茂盛塑胶有限公司";
-        /* WGS-84 坐标（来自 OpenStreetMap），地理编码失败时备用 */
+        var COMPANY_ADDR = "浙江省东阳市横店工业区科兴路17号";
+        /* WGS-84 坐标（来自 OpenStreetMap） */
         var COMPANY_LNG = 120.229;
         var COMPANY_LAT = 29.178;
 
@@ -1288,102 +1448,19 @@
         var GMAP_SRC  = "https://maps.google.com/maps?q=" + COMPANY_LAT + "," + COMPANY_LNG + "&z=14&output=embed";
         var GMAP_LINK = "https://www.google.com/maps?q=" + COMPANY_LAT + "," + COMPANY_LNG + "&z=14";
 
-        /* 百度地图"查看大地图"链接 */
-        var BAIDU_LINK = "https://map.baidu.com/?wd=" + encodeURIComponent(COMPANY_ADDR);
-
-        var bmapLoaded = false;
-        var bmapInstance = null;
-        var bmapCenter = null;  /* 缓存地图中心点，切换语言后恢复视图 */
-
-        /* 未配置 AK 时显示占位提示（附"在百度地图中查看"跳转链接） */
-        function showBMapPlaceholder() {
-            if (!bmapContainer) return;
-            bmapContainer.innerHTML =
-                '<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:14px;padding:24px;text-align:center;background:var(--color-bg-alt);">' +
-                '<p style="font-size:1.1rem;color:var(--color-primary);font-weight:600;">⚠️ 百度地图待配置</p>' +
-                '<p style="font-size:0.88rem;line-height:1.7;color:var(--color-text-light);">请在 <code style="background:#f0ede8;padding:2px 6px;border-radius:3px;">js/main.js</code> 顶部 <code style="background:#f0ede8;padding:2px 6px;border-radius:3px;">BAIDU_KEY</code> 处填入密钥<br>（到 lbsyun.baidu.com 免费申请）</p>' +
-                '<a href="' + BAIDU_LINK + '" target="_blank" rel="noopener" class="btn btn--ghost">在百度地图中查看 →</a>' +
-                '</div>';
-        }
-
-        function loadBaiduScript(callback) {
-            if (BAIDU_KEY === "YOUR_BAIDU_KEY") { showBMapPlaceholder(); return; }
-            if (bmapLoaded) { callback && callback(); return; }
-            /* 百度地图 JS API 通过 callback 参数异步加载（不同于高德的 onload） */
-            window.__bmapInitCallback = function () {
-                bmapLoaded = true;
-                callback && callback();
-            };
-            var s = document.createElement("script");
-            s.src = "https://api.map.baidu.com/api?v=3.0&ak=" + BAIDU_KEY + "&callback=__bmapInitCallback";
-            s.onerror = function () { showBMapPlaceholder(); };
-            document.head.appendChild(s);
-        }
-
-        function initBMap() {
-            if (!bmapContainer || typeof BMap === "undefined") { showBMapPlaceholder(); return; }
-            if (bmapInstance) return;  /* 已初始化，无需重复创建 */
-
-            bmapInstance = new BMap.Map(bmapContainer);
-            bmapInstance.enableScrollWheelZoom(true);
-            bmapInstance.addControl(new BMap.NavigationControl());
-            bmapInstance.addControl(new BMap.ScaleControl());
-
-            function setupMap(point) {
-                bmapCenter = point;
-                bmapInstance.centerAndZoom(point, 16);
-                var marker = new BMap.Marker(point);
-                bmapInstance.addOverlay(marker);
-                var info = new BMap.InfoWindow(
-                    '<div style="padding:4px 8px;line-height:1.6;">' +
-                    '<strong style="color:#1c2b33;font-size:0.95rem;">' + COMPANY_NAME + '</strong><br>' +
-                    '<span style="color:#5a6166;font-size:0.85rem;">' + COMPANY_ADDR + '</span></div>'
-                );
-                bmapInstance.openInfoWindow(info, point);
-                marker.addEventListener("click", function () {
-                    bmapInstance.openInfoWindow(info, point);
-                });
+        /* 所有语言统一使用谷歌地图 */
+        function updateMap() {
+            if (mapFrame.src.indexOf("maps.google.com") === -1) {
+                mapFrame.src = GMAP_SRC;
             }
-
-            /* 优先通过地址地理编码获取精确位置（百度返回 BD-09 坐标） */
-            var geo = new BMap.Geocoder();
-            geo.getPoint(COMPANY_ADDR, function (point) {
-                if (point) {
-                    setupMap(point);
-                } else {
-                    /* 地理编码失败，使用 WGS-84 坐标兜底（约有 500m 偏移） */
-                    setupMap(new BMap.Point(COMPANY_LNG, COMPANY_LAT));
-                }
-            }, "东阳");
+            if (mapLink) mapLink.href = GMAP_LINK;
         }
 
-        function updateMap(lang) {
-            if (lang === "zh") {
-                if (mapFrame) mapFrame.style.display = "none";
-                if (bmapContainer) bmapContainer.style.display = "block";
-                if (mapLink) mapLink.href = BAIDU_LINK;
-                if (bmapInstance) {
-                    /* 容器从隐藏→可见，触发 resize + 重新定位让百度地图重算尺寸 */
-                    window.dispatchEvent(new Event("resize"));
-                    if (bmapCenter) bmapInstance.centerAndZoom(bmapCenter, 16);
-                } else {
-                    loadBaiduScript(initBMap);
-                }
-            } else {
-                if (mapFrame) {
-                    mapFrame.style.display = "block";
-                    if (mapFrame.src.indexOf("maps.google.com") === -1) mapFrame.src = GMAP_SRC;
-                }
-                if (bmapContainer) bmapContainer.style.display = "none";
-                if (mapLink) mapLink.href = GMAP_LINK;
-            }
-        }
-
-        /* 初始渲染（initI18N 已先执行，CURRENT_LANG 已就绪） */
-        updateMap(CURRENT_LANG || "zh");
-        /* 监听语言切换 */
-        document.addEventListener("languagechange", function (e) {
-            updateMap(e.detail.lang);
+        /* 初始渲染 */
+        updateMap();
+        /* 监听语言切换（保持地图引用始终为谷歌地图） */
+        document.addEventListener("languagechange", function () {
+            updateMap();
         });
     }
 
