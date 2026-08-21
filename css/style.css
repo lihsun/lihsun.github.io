@@ -2258,6 +2258,88 @@ textarea.form-control {
     line-height: 1.5;
 }
 
+/* 实时估算价（双币） */
+.quote-price {
+    margin-top: 18px;
+    padding: 20px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
+    border-radius: var(--radius-md);
+    color: #fff;
+}
+.quote-price__title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-accent-light);
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+}
+.quote-price__values {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+.quote-price__item {
+    flex: 1;
+    min-width: 120px;
+}
+.quote-price__label {
+    display: block;
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.65);
+    margin-bottom: 4px;
+}
+.quote-price__amount {
+    font-size: 1.65rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+.quote-price__unit {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 4px;
+}
+.quote-price__breakdown {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.16);
+}
+.quote-price__bd-title {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+}
+.quote-price__bd-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.88);
+}
+.quote-price__bd-row span:last-child {
+    color: var(--color-accent-light);
+    font-variant-numeric: tabular-nums;
+}
+.quote-price__bd-total {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.22);
+    font-weight: 700;
+    color: #fff;
+}
+.quote-price__bd-total span:last-child {
+    color: #fff;
+}
+.quote-price__note {
+    margin-top: 14px;
+    font-size: 0.68rem;
+    line-height: 1.5;
+    color: rgba(, 255, 255, 0.5);
+}
+
 /* 摘要区 */
 .quote-summary-actions {
     display: flex;
