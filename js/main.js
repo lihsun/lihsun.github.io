@@ -1441,8 +1441,8 @@
         var COMPANY_NAME = "东阳茂盛塑胶有限公司";
         var COMPANY_ADDR = "浙江省东阳市横店工业区科兴路17号";
         /* WGS-84 坐标（来自 OpenStreetMap） */
-        var COMPANY_LNG = 120.229;
-        var COMPANY_LAT = 29.178;
+        var COMPANY_LNG = 120.280375;
+        var COMPANY_LAT = 29.161846;
 
         /* 谷歌地图（无需 API Key，使用 iframe embed） */
         var GMAP_SRC  = "https://maps.google.com/maps?q=" + COMPANY_LAT + "," + COMPANY_LNG + "&z=14&output=embed";
