@@ -220,14 +220,12 @@
             <p class="lead" data-i18n="contact.map.lead">浙江省东阳市横店工业区科兴路 17 号，欢迎莅临参观洽谈。</p>
         </div>
         <div class="map-embed reveal">
-            <!-- 谷歌地图（非中文语言使用，无需 API Key） -->
+            <!-- 谷歌地图（全语言统一使用，无需 API Key，iframe embed） -->
             <iframe id="mapFrame"
                 src="https://maps.google.com/maps?q=29.178,120.229&z=14&output=embed"
                 title="东阳茂盛塑胶有限公司位置地图"
                 loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade"></iframe>
-            <!-- 百度地图（中文版使用，需在 js/main.js 顶部配置 BAIDU_KEY） -->
-            <div id="mapContainerBMap" class="map-bmap" style="display:none;"></div>
         </div>
         <p style="text-align:center; margin-top:16px;">
             <a id="mapLink" href="https://www.google.com/maps?q=29.178,120.229&z=14" target="_blank" rel="noopener" class="btn btn--ghost"><span data-i18n="contact.map.link">查看大地图</span> →</a>

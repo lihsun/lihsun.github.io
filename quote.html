@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="东阳茂盛塑胶自定义地板报价配置 - 在线自定义 SPC/LVT/WPC 三种地板的每一层配置（UV涂层、耐磨层、装饰纸、基材等），实时生成截面结构图与配置摘要，提交后 1 个工作日内获得专属报价。" data-i18n-desc="quote.metaDesc">
-    <meta name="keywords" content="自定义地板报价,SPC地板配置,LVT地板配置,WPC地板配置,塑胶地板定制,在线报价">
-    <title data-i18n-title="quote.pageTitle">自定义报价配置 - SPC/LVT/WPC 地板在线定制 | 东阳茂盛塑胶</title>
+    <meta name="description" content="东阳茂盛塑胶自定义地板报价配置 - 在线自定义 SPC/LVT 两种地板的每一层配置（UV涂层、耐磨层、装饰纸、基材等），实时生成截面结构图与配置摘要，提交后 1 个工作日内获得专属报价。" data-i18n-desc="quote.metaDesc">
+    <meta name="keywords" content="自定义地板报价,SPC地板配置,LVT地板配置,塑胶地板定制,在线报价">
+    <title data-i18n-title="quote.pageTitle">自定义报价配置 - SPC/LVT 地板在线定制 | 东阳茂盛塑胶</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -86,7 +86,6 @@
                 <div class="quote-tabs" role="tablist">
                     <button type="button" class="quote-tab active" data-type="spc" data-i18n="quote.tab.spc">SPC 地板</button>
                     <button type="button" class="quote-tab" data-type="lvt" data-i18n="quote.tab.lvt">LVT 地板</button>
-                    <button type="button" class="quote-tab" data-type="wpc" data-i18n="quote.tab.wpc">WPC 地板</button>
                 </div>
 
                 <div class="quote-layers" id="quoteLayers">
@@ -102,6 +101,24 @@
                     <!-- JS 渲染分层结构 -->
                 </div>
                 <p class="quote-diagram__note" data-i18n="quote.diagram.note">注：示意图仅展示层结构顺序，不代表实际厚度比例。</p>
+
+                <!-- 实时估算价（双币） -->
+                <div class="quote-price" id="quotePrice">
+                    <div class="quote-price__title" id="qpTitle"></div>
+                    <div class="quote-price__values">
+                        <div class="quote-price__item">
+                            <span class="quote-price__label" id="qpUsdLabel"></span>
+                            <span class="quote-price__amount" id="qpUsd"></span>
+                        </div>
+                        <div class="quote-price__item">
+                            <span class="quote-price__label" id="qpRmbLabel"></span>
+                            <span class="quote-price__amount" id="qpRmb"></span>
+                        </div>
+                    </div>
+                    <div class="quote-price__unit" id="qpUnit"></div>
+                    <div class="quote-price__breakdown" id="qpBreakdown"></div>
+                    <p class="quote-price__note" id="qpNote"></p>
+                </div>
             </div>
         </div>
     </div>
