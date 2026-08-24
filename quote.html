@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="东阳茂盛塑胶自定义地板报价配置 - 在线自定义 SPC/LVT 两种地板的每一层配置（UV涂层、耐磨层、装饰纸、基材等），实时生成截面结构图与配置摘要，提交后 1 个工作日内获得专属报价。" data-i18n-desc="quote.metaDesc">
-    <meta name="keywords" content="自定义地板报价,SPC地板配置,LVT地板配置,塑胶地板定制,在线报价">
-    <title data-i18n-title="quote.pageTitle">自定义报价配置 - SPC/LVT 地板在线定制 | 东阳茂盛塑胶</title>
+    <meta name="description" content="东阳茂盛塑胶自定义地板报价配置 - 在线自定义 SPC/LVT 两种地板的每一层配置（UV涂层、耐磨层、装饰纸、基材等），实时生成截面结构图、USD/CNY 双币种估算价格与配置摘要，提交后 1 个工作日内获得专属报价。" data-i18n-desc="quote.metaDesc">
+    <meta name="keywords" content="自定义地板报价,SPC地板配置,LVT地板配置,SPC地板价格,LVT地板价格,塑胶地板定制,在线报价,地板估价器,vinyl flooring configurator">
+    <title data-i18n-title="quote.pageTitle">自定义报价配置 - SPC/LVT 地板在线定制与实时估价 | 东阳茂盛塑胶</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -58,7 +58,7 @@
 
 <!-- ========== 页面 Banner ========== -->
 <section class="page-banner">
-    <style>.page-banner::before{background-image:url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20vinyl%20flooring%20cross%20section%20layer%20structure%20display%2C%20industrial%20product%20photography%2C%20SPC%20LVT%20WPC%20flooring%20samples%2C%20professional%20clean%20background&image_size=landscape_16_9');}</style>
+    <style>.page-banner::before{background-image:url('https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20vinyl%20flooring%20cross%20section%20layer%20structure%20display%2C%20industrial%20product%20photography%2C%20SPC%20LVT%20flooring%20samples%2C%20professional%20clean%20background&image_size=landscape_16_9');}</style>
     <div class="container">
         <div class="page-banner__inner">
             <h1 data-i18n="quote.banner.title">自定义报价配置</h1>
@@ -95,29 +95,30 @@
 
             <!-- 右侧：截面结构图（实时联动） -->
             <div class="quote-diagram reveal reveal-delay-1">
-                <h3 class="quote-diagram__title" data-i18n="quote.diagram.title">截面结构图</h3>
-                <div class="quote-diagram__floor" id="quoteFloorName"></div>
+                <div class="quote-diagram__head">
+                    <h3 class="quote-diagram__title" data-i18n="quote.diagram.title">截面结构图</h3>
+                    <div class="quote-diagram__floor" id="quoteFloorName"></div>
+                </div>
                 <div class="quote-diagram__stack" id="quoteStack">
                     <!-- JS 渲染分层结构 -->
                 </div>
                 <p class="quote-diagram__note" data-i18n="quote.diagram.note">注：示意图仅展示层结构顺序，不代表实际厚度比例。</p>
-
-                <!-- 实时估算价（双币） -->
-                <div class="quote-price" id="quotePrice">
-                    <div class="quote-price__title" id="qpTitle"></div>
-                    <div class="quote-price__values">
+                <!-- 实时估算价格（USD/CNY 双币种） -->
+                <div class="quote-price" id="quotePricePanel" aria-live="polite">
+                    <div class="quote-price__title" data-i18n="quote.price.title">实时估算价格</div>
+                    <div class="quote-price__row">
                         <div class="quote-price__item">
-                            <span class="quote-price__label" id="qpUsdLabel"></span>
-                            <span class="quote-price__amount" id="qpUsd"></span>
+                            <span class="quote-price__currency">USD</span>
+                            <span class="quote-price__value" id="quotePriceUsd">$0.00</span>
                         </div>
+                        <div class="quote-price__divider" aria-hidden="true">≈</div>
                         <div class="quote-price__item">
-                            <span class="quote-price__label" id="qpRmbLabel"></span>
-                            <span class="quote-price__amount" id="qpRmb"></span>
+                            <span class="quote-price__currency">CNY</span>
+                            <span class="quote-price__value" id="quotePriceCny">¥0.00</span>
                         </div>
                     </div>
-                    <div class="quote-price__unit" id="qpUnit"></div>
-                    <div class="quote-price__breakdown" id="qpBreakdown"></div>
-                    <p class="quote-price__note" id="qpNote"></p>
+                    <div class="quote-price__unit" data-i18n="quote.price.perSqm">每平方米 · FOB 中国宁波港口</div>
+                    <p class="quote-price__note" data-i18n="quote.price.note">基于当前市场行情的参考估价，批量采购另有优惠，最终价格以正式报价单为准。</p>
                 </div>
             </div>
         </div>
@@ -225,9 +226,9 @@
             <div class="footer__col">
                 <h4 data-i18n="footer.productSeries">产品系列</h4>
                 <ul class="footer__links">
-                    <li><a href="products.html" data-i18n="footer.dryback">干背式胶粘地板</a></li>
-                    <li><a href="products.html" data-i18n="footer.click">锁扣式 PVC 地板</a></li>
-                    <li><a href="products.html" data-i18n="footer.looselay">免胶铺装地板</a></li>
+                    <li><a href="products.html?filter=dryback" data-i18n="footer.dryback">干背式胶粘地板</a></li>
+                    <li><a href="products.html?filter=click" data-i18n="footer.click">锁扣式 PVC 地板</a></li>
+                    <li><a href="products.html?filter=looselay" data-i18n="footer.looselay">免胶铺装地板</a></li>
                     <li><a href="products.html" data-i18n="footer.woodGrain">木纹系列</a></li>
                     <li><a href="products.html" data-i18n="footer.stoneGrain">石纹系列</a></li>
                 </ul>
@@ -260,7 +261,7 @@
         <button type="button" class="qr-close" id="waQrClose" aria-label="关闭">&times;</button>
         <h3 class="qr-title" data-i18n="float.whatsapp">WhatsApp 联系</h3>
         <p class="qr-hint" data-i18n="float.whatsappHint">扫码添加 WhatsApp 联系</p>
-        <img src="images/whatsapp-qr.png" alt="WhatsApp 二维码" class="qr-img" width="220" height="220">
+        <img src="images/whatsapp-qr.png" alt="WhatsApp 二维码" class="qr-img" width="220" height="220" loading="lazy">
     </div>
 </div>
 
@@ -270,7 +271,7 @@
         <button type="button" class="qr-close" id="wechatQrClose" aria-label="关闭">&times;</button>
         <h3 class="qr-title" data-i18n="float.wechat">微信联系</h3>
         <p class="qr-hint" data-i18n="float.wechatHint">扫码添加微信联系</p>
-        <img src="images/wechat-qr.png" alt="微信二维码" class="qr-img" width="220" height="220">
+        <img src="images/wechat-qr.png" alt="微信二维码" class="qr-img" width="220" height="220" loading="lazy">
     </div>
 </div>
 
@@ -280,7 +281,7 @@
         <button type="button" class="qr-close" id="tiktokQrClose" aria-label="关闭">&times;</button>
         <h3 class="qr-title" data-i18n="float.tiktok">TikTok</h3>
         <p class="qr-hint" data-i18n="float.tiktokHint">扫码关注 TikTok</p>
-        <img src="images/tiktok-qr.png" alt="TikTok 二维码" class="qr-img" width="220" height="220">
+        <img src="images/tiktok-qr.png" alt="TikTok 二维码" class="qr-img" width="220" height="220" loading="lazy">
     </div>
 </div>
 
