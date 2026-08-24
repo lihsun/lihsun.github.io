@@ -195,28 +195,37 @@
         var cards = $all("[data-category]");
         if (tabs.length === 0 || cards.length === 0) return;
 
+        function applyFilter(filter) {
+            tabs.forEach(function (t) {
+                t.classList.toggle("active", t.getAttribute("data-filter") === filter);
+            });
+
+            cards.forEach(function (card) {
+                var cat = card.getAttribute("data-category");
+                if (filter === "all" || cat === filter) {
+                    card.style.display = "";
+                    // 重新触发动画
+                    card.classList.remove("visible");
+                    requestAnimationFrame(function () {
+                        card.classList.add("visible");
+                    });
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
         tabs.forEach(function (tab) {
             tab.addEventListener("click", function () {
-                var filter = tab.getAttribute("data-filter");
-
-                tabs.forEach(function (t) { t.classList.remove("active"); });
-                tab.classList.add("active");
-
-                cards.forEach(function (card) {
-                    var cat = card.getAttribute("data-category");
-                    if (filter === "all" || cat === filter) {
-                        card.style.display = "";
-                        // 重新触发动画
-                        card.classList.remove("visible");
-                        requestAnimationFrame(function () {
-                            card.classList.add("visible");
-                        });
-                    } else {
-                        card.style.display = "none";
-                    }
-                });
+                applyFilter(tab.getAttribute("data-filter"));
             });
         });
+
+        /* 支持 URL 参数定位筛选（内链锚定）：products.html?filter=click */
+        var param = new URLSearchParams(window.location.search).get("filter");
+        if (param && tabs.some(function (t) { return t.getAttribute("data-filter") === param; })) {
+            applyFilter(param);
+        }
     }
 
     /* ======================================================================
@@ -720,11 +729,10 @@
                     defaultValue: "dryback"
                 }
             ]
-        },
-
+        }
     };
 
-    /* 通用附加配置项（三种地板共通） */
+    /* 通用附加配置项（SPC/LVT 两种地板共通） */
     var QUOTE_COMMON = [
         {
             key: "size", nameKey: "quote.common.size",
@@ -785,247 +793,97 @@
         }
     ];
 
+    /* ======================================================================
+       价格数据库（USD/m²，FOB 中国港口）
+       数据来源（2025-2026 市场调研）：
+       1) 中国海关 HS 3918.10 PVC 地板出口数据（出口均价锚点）
+       2) Made-in-China / Alibaba 主要工厂挂牌价（海口 Shineday、山东
+          FloorCasa/Emosin/Home Top、浙江 Dingcheng、常州 Lexuan 等）
+       3) FloorCasa《SPC Flooring Price 2026》、Floren 耐磨层成本实测等
+          行业价格指南
+       估算口径：基准价 + 各配置项价格增量；建议每季度校准一次。
+       ====================================================================== */
+    var USD_CNY_RATE = 6.78;   /* 美元兑人民币汇率（2026-08，请定期更新） */
+
+    /* 基准配置价格（美元/平方米，FOB）：
+       SPC：4.0mm 基材 / 0.2mm 耐磨层 / 半哑光 UV / 木纹 / 密度 2000
+       LVT：2.0mm 中层 / 0.3mm 耐磨层 / 半哑光 UV / 木纹 / 单层100玻纤 / PVC 干背 */
+    var QUOTE_PRICE_BASE = { spc: 2.35, lvt: 3.20 };
+
+    /* 各配置项相对基准配置的价格增量（USD/m²），未列出的选项增量为 0 */
+    var QUOTE_PRICE_DELTA = {
+        /* ---- SPC 专属 ---- */
+        "spc.uvCoating":        { matte: 0, semiMatte: 0.10, glossy: 0.25, crystal: 0.35 },
+        "spc.wearLayer":        { "0.07mm": -0.90, "0.1mm": -0.70, "0.2mm": 0, "0.3mm": 0.70,
+                                  "0.5mm": 2.10, "0.55mm": 2.45, "0.7mm": 3.50 },
+        "spc.decoPaper":        { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
+                                  carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
+        "spc.spcCore.thickness":{ "3.5mm": -0.60, "4.0mm": 0, "4.5mm": 0.60, "5.0mm": 1.20,
+                                  "5.5mm": 1.80, "6.0mm": 2.40, "7.0mm": 3.60, "8.0mm": 4.80 },
+        "spc.spcCore.density":  { "1900": -0.50, "2000": 0, "2100": 0.50, "2200": 1.00 },
+        /* ---- LVT 专属 ---- */
+        "lvt.uvCoating":        { matte: 0, semiMatte: 0.10, glossy: 0.25 },
+        "lvt.wearLayer":        { "0.1mm": -1.40, "0.2mm": -0.70, "0.3mm": 0, "0.5mm": 1.40,
+                                  "0.55mm": 1.75, "0.7mm": 2.80, "1.0mm": 4.90 },
+        "lvt.decoPaper":        { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
+                                  carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
+        "lvt.middleLayer":      { "1.0mm": -0.60, "2.0mm": 0, "3.0mm": 0.60 },
+        "lvt.glassFiber":       { single40: 0, single100: 0.15, single120: 0.25, dual100: 0.40 },
+        "lvt.baseLayer":        { dryback: 0, looselay: 0.80, ixpe15: 1.20, eva15: 0.70, cork15: 1.80 },
+        /* ---- 通用配置（两种地板共通） ---- */
+        "common.size":          { "152x914": 0, "178x1220": 0.05, "180x1220": 0.05,
+                                  "228x1220": 0.15, "228x1520": 0.20, "6x36": 0,
+                                  "7x48": 0.05, "9x60": 0.20 },
+        "common.surface":       { eir: 0.80, deepEmbossed: 0.30, crystal: 0.20,
+                                  smooth: 0, handScraped: 0.60, wireBrushed: 0.40 },
+        "common.bevel":         { square: 0, micro: 0.05, painted: 0.15, vgroove: 0.20 },
+        "common.click":         { unilin: 0.55, valinge2g: 0.30, valinge5g: 0.45,
+                                  valinge5gi: 0.50, i4f: 0.35 },
+        "common.package":       {}   /* 包装规格不影响单价 */
+    };
+
+    /* 计算当前配置的估算价格（USD/m²），返回两位小数 */
+    function quoteCalcPrice() {
+        var ft = quoteState.floorType;
+        var price = QUOTE_PRICE_BASE[ft] || 0;
+        var conf = quoteState.config[ft];
+
+        /* 层配置增量 */
+        Object.keys(conf).forEach(function (key) {
+            var table = QUOTE_PRICE_DELTA[ft + "." + key];
+            if (table && conf[key] in table) {
+                price += table[conf[key]];
+            }
+        });
+
+        /* 通用配置增量 */
+        Object.keys(quoteState.config.common).forEach(function (key) {
+            var table = QUOTE_PRICE_DELTA["common." + key];
+            if (table && quoteState.config.common[key] in table) {
+                price += table[quoteState.config.common[key]];
+            }
+        });
+
+        if (price < 0.5) price = 0.5;   /* 价格下限保护 */
+        return Math.round(price * 100) / 100;
+    }
+
+    /* 渲染实时估算价格（USD + CNY 双币种） */
+    function quoteRenderPrice() {
+        var usdEl = $("#quotePriceUsd");
+        var cnyEl = $("#quotePriceCny");
+        if (!usdEl && !cnyEl) return;
+        var usd = quoteCalcPrice();
+        var cny = Math.round(usd * USD_CNY_RATE * 100) / 100;
+        if (usdEl) usdEl.textContent = "$" + usd.toFixed(2);
+        if (cnyEl) cnyEl.textContent = "¥" + cny.toFixed(2);
+    }
+
     /* 当前状态 */
     var quoteState = {
         floorType: "spc",
         config: { spc: {}, lvt: {}, common: {} }
     };
-
-    /* ======================================================================
-       估算价模型（实时参考价 · FOB 口岸价）
-       --------------------------------------------------------------
-       数据来源（公开市场 / 同行报价 / 海关提单）：
-       - SPC：越南/中国出口商公开报价 $4.75–8.75/㎡、深度压纹 SPC $5–7/㎡、
-         4mm 中国产 SPC 越南进口提单单价约 $4.2/㎡（Volza HSCode 68109900）
-       - LVT：中国 FOB 指南 4mm click 0.3mm ≈ $3.5–4.5/㎡、2.5mm dryback 0.3mm ≈
-         $2.8–3.6/㎡、0.5–0.7mm 商用 ≈ $4.5–8.5/㎡；上海 3C 公开区间 $3–5/㎡
-       - 汇率：1 USD ≈ 7.25 CNY（会随市场波动，此处取静态参考值）
-       模型按「基础工序 + 各层材质加价」累加计费，仅作实时估价，最终以正式报价单为准。
-       ====================================================================== */
-    var QUOTE_USD_TO_RMB = 7.25;
-
-    var QUOTE_PRICE = {
-        spc: {
-            base: 1.00,                         // 基础工序 / 品牌加工费
-            thicknessUnit: 0.55,                // 石晶基材每 mm 成本
-            wear: { "0.07mm":0, "0.1mm":0.15, "0.2mm":0.35, "0.3mm":0.6, "0.5mm":1.1, "0.55mm":1.25, "0.7mm":1.6 },
-            uv:   { matte:0.2, semiMatte:0.2, glossy:0.2, crystal:0.5 },
-            density: { "1900":0, "2000":0.15, "2100":0.3, "2200":0.45 }
-        },
-        lvt: {
-            base: 0.90,                         // 基础工序 / 品牌加工费
-            middle: { "1.0mm":1.1, "2.0mm":1.9, "3.0mm":2.7 },   // 中层 PVC（厚度代理）
-            wear: { "0.1mm":0.15, "0.2mm":0.35, "0.3mm":0.6, "0.5mm":1.1, "0.55mm":1.25, "0.7mm":1.6, "1.0mm":2.2 },
-            uv:   { matte:0.2, semiMatte:0.2, glossy:0.2, crystal:0.5 },
-            glassfiber: { single40:0.15, single100:0.25, single120:0.35, dual100:0.5 },
-            baseLayer: { dryback:0, looselay:0.6, ixpe15:0.5, eva15:0.4, cork15:0.7 }
-        },
-        common: {
-            surface: { eir:0.3, deepEmbossed:0.4, crystal:0.5, smooth:0.1, handScraped:0.6, wireBrushed:0.5 },
-            bevel:   { square:0, micro:0.1, painted:0.25, vgroove:0.3 },
-            click:   { unilin:0.2, valinge2g:0.2, valinge5g:0.35, valinge5gi:0.4, i4f:0.45 },
-            size:    { "152x914":0, "178x1220":0.1, "180x1220":0.12, "228x1220":0.2, "228x1520":0.25, "6x36":0, "7x48":0.05, "9x60":0.1 },
-            package: { "1.46":0, "1.63":0.05, "2.19":0.1, "2.97":0.15 }
-        }
-    };
-
-    /* 价格卡片多语言文案（覆盖站点支持的全部语言；缺失时回退中文） */
-    var QUOTE_PRICE_I18N = {
-        zh: {
-            title: "实时估算价 · FOB 口岸价",
-            unit: "每平方米",
-            usd: "美元 USD",
-            rmb: "人民币 CNY",
-            breakdown: "价格构成",
-            base: "基础工序",
-            total: "合计",
-            note: "参考中国/越南出口商公开报价及海关提单数据（FOB 口岸价），仅供实时估价，最终以正式报价单为准。汇率 1 USD ≈ 7.25 CNY。",
-            ref: "估算参考价（FOB）"
-        },
-        en: {
-            title: "Estimated Price · FOB",
-            unit: "per sqm",
-            usd: "US Dollar",
-            rmb: "Chinese Yuan",
-            breakdown: "Price Breakdown",
-            base: "Base / Process",
-            total: "Total",
-            note: "Reference: public export quotes from China/Vietnam suppliers and customs bill-of-lading data (FOB port price). For indication only; final quote on official quotation. Rate: 1 USD ≈ 7.25 CNY.",
-            ref: "Estimated Reference (FOB)"
-        },
-        es: {
-            title: "Precio Estimado · FOB",
-            unit: "por m²",
-            usd: "Dólar EE. UU.",
-            rmb: "Yuan chino",
-            breakdown: "Desglose de precio",
-            base: "Base / Proceso",
-            total: "Total",
-            note: "Referencia: cotizaciones públicas de exportadores de China/Vietnam y datos de conocimiento de embarque aduanero (precio FOB). Solo para referencia; cotización final en cotización oficial. Tipo: 1 USD ≈ 7.25 CNY.",
-            ref: "Precio de referencia (FOB)"
-        },
-        de: {
-            title: "Geschätzter Preis · FOB",
-            unit: "pro m²",
-            usd: "US-Dollar",
-            rmb: "Chinesischer Yuan",
-            breakdown: "Preisaufschlüsselung",
-            base: "Basis / Verarbeitung",
-            total: "Gesamt",
-            note: "Referenz: öffentliche Exportangebote von China-/Vietnam-Lieferanten und Zolldokumente (FOB-Hafenpreis). Nur als Indikation; finales Angebot in offizieller Offerte. Kurs: 1 USD ≈ 7.25 CNY.",
-            ref: "Referenzpreis (FOB)"
-        },
-        fr: {
-            title: "Prix Estimé · FOB",
-            unit: "par m²",
-            usd: "Dollar US",
-            rmb: "Yuan chinois",
-            breakdown: "Détail du prix",
-            base: "Base / Procédé",
-            total: "Total",
-            note: "Référence : devis d'exportation publics de fournisseurs Chine/Vietnam et données de connaissement douanier (prix FOB). Indicatif uniquement ; devis final sur devis officiel. Taux : 1 USD ≈ 7.25 CNY.",
-            ref: "Prix de référence (FOB)"
-        },
-        pt: {
-            title: "Preço Estimado · FOB",
-            unit: "por m²",
-            usd: "Dólar EUA",
-            rmb: "Yuan chinês",
-            breakdown: "Detalhamento",
-            base: "Base / Processo",
-            total: "Total",
-            note: "Referência: cotações públicas de exportadores da China/Vietnã e dados de conhecimento de embarque aduaneiro (preço FOB). Apenas indicativo; cotação final em cotação oficial. Câmbio: 1 USD ≈ 7.25 CNY.",
-            ref: "Preço de referência (FOB)"
-        },
-        it: {
-            title: "Prezzo Stimato · FOB",
-            unit: "per m²",
-            usd: "Dollaro USA",
-            rmb: "Yuan cinese",
-            breakdown: "Dettaglio prezzo",
-            base: "Base / Lavorazione",
-            total: "Totale",
-            note: "Riferimento: preventivi di esportazione pubblici di fornitori Cina/Vietnam e dati di polizza di carico doganale (prezzo FOB). Solo indicativo; preventivo finale su quotazione ufficiale. Tasso: 1 USD ≈ 7.25 CNY.",
-            ref: "Prezzo di riferimento (FOB)"
-        },
-        ru: {
-            title: "Расчётная Цена · FOB",
-            unit: "за м²",
-            usd: "Доллар США",
-            rmb: "Китайский юань",
-            breakdown: "Структура цены",
-            base: "База / Процесс",
-            total: "Итого",
-            note: "Справка: публичные экспортные прайсы поставщиков из Китая/Вьетнама и данные таможенных коносаментов (цена FOB). Только для оценки; окончательная цена в официальной смете. Курс: 1 USD ≈ 7.25 CNY.",
-            ref: "Ориентировочная цена (FOB)"
-        },
-        tr: {
-            title: "Tahmini Fiyat · FOB",
-            unit: "m² başına",
-            usd: "ABD Doları",
-            rmb: "Çin Yuanı",
-            breakdown: "Fiyat Dağılımı",
-            base: "Temel / İşlem",
-            total: "Toplam",
-            note: "Referans: Çin/Vietnam tedarikçilerinin açık ihracat teklifleri ve gümrük konşimento verileri (FOB liman fiyatı). Yalnızca gösterge; kesin fiyat resmi teklifte. Kur: 1 USD ≈ 7.25 CNY.",
-            ref: "Tahmini referans (FOB)"
-        },
-        ar: {
-            title: "السعر التقديري · FOB",
-            unit: "لكل م²",
-            usd: "دولار أمريكي",
-            rmb: "اليوان الصيني",
-            breakdown: "تفصيل السعر",
-            base: "أساس / معالجة",
-            total: "الإجمالي",
-            note: "مرجع: أسعار تصدير عامة من موردي الصين/فيتنام وبيانات بوليصة الشحن الجمركية (سعر FOB). للاسترشاد فقط؛ السعر النهائي في عرض السعر الرسمي. السعر: 1 USD ≈ 7.25 CNY.",
-            ref: "السعر المرجعي (FOB)"
-        },
-        vi: {
-            title: "Giá Ước Tính · FOB",
-            unit: "mỗi m²",
-            usd: "Đô la Mỹ",
-            rmb: "Nhân dân tệ",
-            breakdown: "Cơ cấu giá",
-            base: "Cơ sở / Quy trình",
-            total: "Tổng cộng",
-            note: "Tham khảo: báo giá xuất khẩu công khai từ nhà cung cấp Trung Quốc/Việt Nam và dữ liệu vận đơn hải quan (giá FOB). Chỉ để ước tính; báo giá cuối cùng theo bảng báo giá chính thức. Tỷ giá: 1 USD ≈ 7.25 CNY.",
-            ref: "Giá tham khảo (FOB)"
-        }
-    };
-
-    function pp(key) {
-        var d = QUOTE_PRICE_I18N[CURRENT_LANG] || QUOTE_PRICE_I18N.zh;
-        return d[key] || QUOTE_PRICE_I18N.zh[key] || key;
-    }
-
-    /* 计算当前配置的估算价（USD / ㎡，含构成明细） */
-    function quoteCalcPrice() {
-        var ft = quoteState.floorType;
-        var c = quoteState.config[ft];
-        var P = QUOTE_PRICE[ft];
-        var cm = QUOTE_PRICE.common;
-        var items = [];
-        var total = 0;
-        function add(label, val) {
-            val = val || 0;
-            total += val;
-            items.push({ label: label, val: val });
-        }
-
-        if (ft === "spc") {
-            add(pp("base"), P.base);
-            add(I18N.t(CURRENT_LANG, "quote.layer.spcCore.thickness"),
-                parseFloat(c["spcCore.thickness"]) * P.thicknessUnit);
-            add(I18N.t(CURRENT_LANG, "quote.layer.wearLayer"), P.wear[c["wearLayer"]]);
-            add(I18N.t(CURRENT_LANG, "quote.layer.uvCoating"), P.uv[c["uvCoating"]]);
-            add(I18N.t(CURRENT_LANG, "quote.layer.spcCore.density"), P.density[c["spcCore.density"]]);
-        } else {
-            add(pp("base"), P.base);
-            add(I18N.t(CURRENT_LANG, "quote.layer.middleLayer"), P.middle[c["middleLayer"]]);
-            add(I18N.t(CURRENT_LANG, "quote.layer.wearLayer"), P.wear[c["wearLayer"]]);
-            add(I18N.t(CURRENT_LANG, "quote.layer.uvCoating"), P.uv[c["uvCoating"]]);
-            add(I18N.t(CURRENT_LANG, "quote.layer.glassFiber"), P.glassfiber[c["glassFiber"]]);
-            add(I18N.t(CURRENT_LANG, "quote.layer.baseLayer"), P.baseLayer[c["baseLayer"]]);
-        }
-        /* 通用附加项（SPC / LVT 共通） */
-        add(I18N.t(CURRENT_LANG, "quote.common.surface"), cm.surface[c.surface]);
-        add(I18N.t(CURRENT_LANG, "quote.common.bevel"), cm.bevel[c.bevel]);
-        add(I18N.t(CURRENT_LANG, "quote.common.click"), cm.click[c.click]);
-        add(I18N.t(CURRENT_LANG, "quote.common.size"), cm.size[c.size]);
-        add(I18N.t(CURRENT_LANG, "quote.common.package"), cm.package[c.package]);
-
-        return { items: items, usd: total, rmb: total * QUOTE_USD_TO_RMB };
-    }
-
-    /* 渲染估算价卡片 */
-    function quoteRenderPrice() {
-        var box = $("#quotePrice");
-        if (!box) return;
-        var data = quoteCalcPrice();
-        $("#qpTitle").textContent = pp("title");
-        $("#qpUsdLabel").textContent = pp("usd");
-        $("#qpRmbLabel").textContent = pp("rmb");
-        $("#qpUsd").textContent = "$" + data.usd.toFixed(2);
-        $("#qpRmb").textContent = "¥" + data.rmb.toFixed(2);
-        $("#qpUnit").textContent = pp("unit");
-        $("#qpNote").textContent = pp("note");
-
-        var bh = '<div class="quote-price__bd-title">' + pp("breakdown") + '</div>' +
-                 '<div class="quote-price__bd-list">';
-        data.items.forEach(function (it) {
-            bh += '<div class="quote-price__bd-row">' +
-                   '<span>' + it.label + '</span>' +
-                   '<span>$' + it.val.toFixed(2) + '</span>' +
-                   '</div>';
-        });
-        bh += '<div class="quote-price__bd-row quote-price__bd-total">' +
-               '<span>' + pp("total") + '</span>' +
-               '<span>$' + data.usd.toFixed(2) + '</span>' +
-               '</div>';
-        bh += '</div>';
-        $("#qpBreakdown").innerHTML = bh;
-    }
 
     /* 初始化默认值 */
     function quoteInitDefaults() {
@@ -1143,7 +1001,6 @@
                     '</div>';
         });
         stack.innerHTML = html;
-        quoteRenderPrice();
     }
 
     /* 处理配置项变化 */
@@ -1170,6 +1027,7 @@
         });
 
         quoteRenderStack();
+        quoteRenderPrice();
         quoteUpdateSummary();
     }
 
@@ -1214,11 +1072,10 @@
             lines.push("- " + I18N.t(CURRENT_LANG, item.nameKey) + ": " + quoteGetOptionLabel(item, v));
         });
         lines.push("");
-        /* 估算参考价（FOB 口岸价，双币） */
-        var pr = quoteCalcPrice();
-        lines.push("【" + pp("ref") + "】");
-        lines.push(pp("usd") + ": $" + pr.usd.toFixed(2) + " / " + pp("unit"));
-        lines.push(pp("rmb") + ": ¥" + pr.rmb.toFixed(2) + " / " + pp("unit"));
+        lines.push("【" + I18N.t(CURRENT_LANG, "quote.summary.estPrice") + "】");
+        var estUsd = quoteCalcPrice();
+        var estCny = Math.round(estUsd * USD_CNY_RATE * 100) / 100;
+        lines.push("$" + estUsd.toFixed(2) + " /m²  ≈  ¥" + estCny.toFixed(2) + " /m² (FOB)");
         lines.push("");
         lines.push("【" + I18N.t(CURRENT_LANG, "quote.summary.contactInfo") + "】");
         var form = $("#quoteForm");
@@ -1283,6 +1140,7 @@
         quoteInitDefaults();
         quoteRenderLayers();
         quoteRenderStack();
+        quoteRenderPrice();
         quoteUpdateSummary();
 
         /* 2. Tab 切换 */
@@ -1293,6 +1151,7 @@
                 quoteState.floorType = tab.getAttribute("data-type");
                 quoteRenderLayers();
                 quoteRenderStack();
+                quoteRenderPrice();
                 quoteUpdateSummary();
             });
         });
@@ -1423,24 +1282,22 @@
         document.addEventListener("languagechange", function () {
             quoteRenderLayers();
             quoteRenderStack();
+            quoteRenderPrice();
             quoteUpdateSummary();
         });
     }
 
     /* ======================================================================
-       12. 地图（仅 contact.html 生效）——全语言统一使用谷歌地图（iframe embed，无需 API Key）
+       12. 公司位置地图（仅 contact.html 生效）——统一使用谷歌地图
+       谷歌地图 iframe embed 方式无需 API Key，自带位置标记、缩放、
+       平移、卫星图层等交互功能，全球可用（含中国境外访问场景）。
        ====================================================================== */
 
     function initMapSwitcher() {
         var mapFrame = $("#mapFrame");
-        if (!mapFrame) return;  /* 仅 contact.html 有该元素 */
+        if (!mapFrame) return;   /* 仅 contact.html 有该元素 */
 
-        var mapLink = $("#mapLink");
-
-        /* 公司信息 */
-        var COMPANY_NAME = "东阳茂盛塑胶有限公司";
-        var COMPANY_ADDR = "浙江省东阳市横店工业区科兴路17号";
-        /* WGS-84 坐标（来自 OpenStreetMap） */
+        /* 公司位置（WGS-84 坐标，来自 OpenStreetMap） */
         var COMPANY_LNG = 120.284919;
         var COMPANY_LAT = 29.158970;
 
@@ -1448,20 +1305,13 @@
         var GMAP_SRC  = "https://maps.google.com/maps?q=" + COMPANY_LAT + "," + COMPANY_LNG + "&z=14&output=embed";
         var GMAP_LINK = "https://www.google.com/maps?q=" + COMPANY_LAT + "," + COMPANY_LNG + "&z=14";
 
-        /* 所有语言统一使用谷歌地图 */
-        function updateMap() {
-            if (mapFrame.src.indexOf("maps.google.com") === -1) {
-                mapFrame.src = GMAP_SRC;
-            }
-            if (mapLink) mapLink.href = GMAP_LINK;
-        }
+        /* 确保所有语言下均显示谷歌地图 */
+        mapFrame.style.display = "block";
+        if (mapFrame.src.indexOf("maps.google.com") === -1) mapFrame.src = GMAP_SRC;
 
-        /* 初始渲染 */
-        updateMap();
-        /* 监听语言切换（保持地图引用始终为谷歌地图） */
-        document.addEventListener("languagechange", function () {
-            updateMap();
-        });
+        /* "查看大地图"链接统一指向谷歌地图 */
+        var mapLink = $("#mapLink");
+        if (mapLink) mapLink.href = GMAP_LINK;
     }
 
     /* ======================================================================
