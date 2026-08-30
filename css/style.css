@@ -2060,6 +2060,7 @@ textarea.form-control {
 /* Tab 切换 */
 .quote-tabs {
     display: flex;
+    flex-wrap: wrap;    /* 四个 Tab 在窄屏下自动换行 */
     gap: 4px;
     background: var(--color-bg);
     padding: 6px;
