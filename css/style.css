@@ -948,6 +948,66 @@ p { margin-bottom: 0.8em; }
     color: var(--color-primary);
 }
 
+/* ---------- 展会现场集锦 ---------- */
+.expo-gallery-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 48px auto 32px;
+}
+.expo-gallery-head__title {
+    font-size: 1.3rem;
+    position: relative;
+    padding: 0 26px;
+}
+.expo-gallery-head__title::before,
+.expo-gallery-head__title::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 18px;
+    height: 2px;
+    background: var(--color-accent);
+}
+.expo-gallery-head__title::before { left: 0; }
+.expo-gallery-head__title::after { right: 0; }
+.expo-gallery-head__desc {
+    color: var(--color-text-light);
+    font-size: 0.95rem;
+    margin-top: 8px;
+}
+.expo-gallery {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+}
+.expo-gallery__item {
+    grid-column: span 3;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    position: relative;
+    background: var(--color-bg-alt);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+.expo-gallery__item:nth-child(5),
+.expo-gallery__item:nth-child(6),
+.expo-gallery__item:nth-child(7) {
+    grid-column: span 4;
+}
+.expo-gallery__item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+.expo-gallery__item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+}
+.expo-gallery__item:hover img { transform: scale(1.06); }
+
 /* ==========================================================================
    CTA 行动召唤
    ========================================================================== */
@@ -1922,6 +1982,7 @@ textarea.form-control {
     .strength-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    /* expo-gallery 继承桌面 3+2 布局 */
     .advantages { grid-template-columns: repeat(2, 1fr); }
     .cert-grid { grid-template-columns: repeat(2, 1fr); }
     .gallery-grid { grid-template-columns: repeat(3, 1fr); }
@@ -1980,6 +2041,13 @@ textarea.form-control {
     .advantages,
     .cert-grid {
         grid-template-columns: 1fr;
+    }
+    .expo-gallery { grid-template-columns: 1fr; }
+    .expo-gallery__item,
+    .expo-gallery__item:nth-child(5),
+    .expo-gallery__item:nth-child(6),
+    .expo-gallery__item:nth-child(7) {
+        grid-column: span 1;
     }
     .gallery-grid { grid-template-columns: repeat(2, 1fr); }
     .cases-feature {
