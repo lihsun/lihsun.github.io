@@ -2336,62 +2336,6 @@ a.lang-switch__option {
     line-height: 1.5;
 }
 
-/* ===== 产品中心：系列截面结构图（复用 .stack-layer 层样式） ===== */
-.structure-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 28px;
-}
-.structure-card {
-    background: var(--color-bg-alt);
-    border-radius: var(--radius-lg);
-    padding: 28px 24px;
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--color-border);
-    min-width: 0;
-}
-.structure-card__head {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 14px;
-}
-.structure-card__title {
-    margin-bottom: 0;
-    color: var(--color-primary);
-    font-size: 1.05rem;
-}
-.structure-card__floor {
-    font-size: 0.85rem;
-    color: var(--color-accent);
-    font-weight: 600;
-    padding: 6px 14px;
-    background: rgba(184, 137, 90, 0.12);
-    border-radius: 20px;
-    display: inline-block;
-    white-space: nowrap;
-}
-.structure-card__stack {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin-bottom: 14px;
-}
-.structure-card__note {
-    font-size: 0.76rem;
-    color: var(--color-text-muted);
-    text-align: center;
-    margin-top: 10px;
-    line-height: 1.5;
-}
-@media (max-width: 992px) {
-    .structure-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
 /* 实时估算价格（USD/CNY 双币种） */
 .quote-price {
     margin-top: 18px;
