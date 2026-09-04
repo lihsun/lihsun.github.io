@@ -523,6 +523,7 @@
                     key: "wearLayer", nameKey: "quote.layer.wearLayer", type: "radio",
                     options: [
                         { value: "0.1mm",  labelKey: "quote.opt.wl.0.1" },
+                        { value: "0.15mm", labelKey: "quote.opt.wl.0.15" },
                         { value: "0.2mm",  labelKey: "quote.opt.wl.0.2" },
                         { value: "0.3mm",  labelKey: "quote.opt.wl.0.3" },
                         { value: "0.5mm",  labelKey: "quote.opt.wl.0.5" },
@@ -594,6 +595,7 @@
                     options: [
                         { value: "0.07mm", labelKey: "quote.opt.wl.0.07" },
                         { value: "0.1mm",  labelKey: "quote.opt.wl.0.1" },
+                        { value: "0.15mm", labelKey: "quote.opt.wl.0.15" },
                         { value: "0.2mm",  labelKey: "quote.opt.wl.0.2" },
                         { value: "0.3mm",  labelKey: "quote.opt.wl.0.3" }
                     ],
@@ -615,6 +617,7 @@
                     key: "middleLayer", nameKey: "quote.layer.middleLayer", type: "radio",
                     options: [
                         { value: "1.0mm", labelKey: "quote.opt.ml.1.0" },
+                        { value: "1.5mm", labelKey: "quote.opt.ml.1.5" },
                         { value: "2.0mm", labelKey: "quote.opt.ml.2.0" },
                         { value: "3.0mm", labelKey: "quote.opt.ml.3.0" }
                     ],
@@ -764,22 +767,25 @@
 
     /* ======================================================================
        价格数据库（USD/m²，FOB 中国港口）
-       数据来源（2025-2026 市场调研）：
-       1) 中国海关 HS 3918.10 PVC 地板出口数据（出口均价锚点）
-       2) Made-in-China / Alibaba 主要工厂挂牌价（海口 Shineday、山东
-          FloorCasa/Emosin/Home Top、浙江 Dingcheng、常州 Lexuan 等）
-       3) FloorCasa《SPC Flooring Price 2026》、Floren 耐磨层成本实测等
-          行业价格指南
+       数据来源（2026-09 重新校准）：
+       1) 中国海关 HS 3918.10 出口数据：2024 均价 $1.08/kg、2025 $1.03/kg、
+          2026 年前 8 个月 $1.00/kg（年降约 3%，量价齐缩、竞争加剧）
+       2) Made-in-China / Alibaba 主要工厂挂牌价：Sunjoy 4-6mm 锁扣 SPC
+          $4.1-9.9、Home Top $3.6-11、Weifang Top $2.99-6.99、Dongguan
+          Xinlijie $4.0-6.0、Hebei Shilian 自粘背胶 $2.98-5.10；
+          1688 内销 4mm SPC 约 ¥13.7-14.6/m²
+       3) 校准结论：主流 FOB 区间 $3.6-6.9/m²，本报价取区间中低位保持
+          询盘竞争力：SPC 基准 +$0.20、LVT +$0.20、自粘 +$0.20、免胶 +$0.25
        估算口径：基准价 + 各配置项价格增量；建议每季度校准一次。
        ====================================================================== */
-    var USD_CNY_RATE = 6.78;   /* 美元兑人民币汇率（2026-08，请定期更新） */
+    var USD_CNY_RATE = 6.78;   /* 美元兑人民币汇率（2026-09-04 中间价 6.7787，请定期更新） */
 
     /* 基准配置价格（美元/平方米，FOB）：
        SPC：4.0mm 基材 / 0.2mm 耐磨层 / 半哑光 UV / 木纹 / 密度 2000
        LVT：2.0mm 中层 / 0.3mm 耐磨层 / 半哑光 UV / 木纹 / 单层100玻纤 / PVC 干背
        自粘背胶：2.0mm 中层 / 0.2mm 耐磨层 / 半哑光 UV / 木纹 / 标准自粘胶
        免胶平铺：4.0mm 基材 / 0.3mm 耐磨层 / 半哑光 UV / 木纹 / 单层100玻纤 / 高密度防滑底 */
-    var QUOTE_PRICE_BASE = { spc: 2.35, lvt: 3.20, selfad: 2.60, looselay: 3.60 };
+    var QUOTE_PRICE_BASE = { spc: 2.55, lvt: 3.40, selfad: 2.80, looselay: 3.85 };
 
     /* 各配置项相对基准配置的价格增量（USD/m²），未列出的选项增量为 0 */
     var QUOTE_PRICE_DELTA = {
@@ -794,7 +800,7 @@
         "spc.spcCore.density":  { "1900": -0.50, "2000": 0, "2100": 0.50, "2200": 1.00 },
         /* ---- LVT 专属 ---- */
         "lvt.uvCoating":        { matte: 0, semiMatte: 0.10, glossy: 0.25 },
-        "lvt.wearLayer":        { "0.1mm": -1.40, "0.2mm": -0.70, "0.3mm": 0, "0.5mm": 1.40,
+        "lvt.wearLayer":        { "0.1mm": -1.40, "0.15mm": -1.05, "0.2mm": -0.70, "0.3mm": 0, "0.5mm": 1.40,
                                   "0.55mm": 1.75, "0.7mm": 2.80, "1.0mm": 4.90 },
         "lvt.decoPaper":        { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
                                   carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
@@ -803,10 +809,10 @@
         "lvt.baseLayer":        { dryback: 0, looselay: 0.80, ixpe15: 1.20, eva15: 0.70, cork15: 1.80 },
         /* ---- 自粘背胶专属 ---- */
         "selfad.uvCoating":     { matte: 0, semiMatte: 0.10, glossy: 0.25 },
-        "selfad.wearLayer":     { "0.07mm": -0.90, "0.1mm": -0.70, "0.2mm": 0, "0.3mm": 0.70 },
+        "selfad.wearLayer":     { "0.07mm": -0.90, "0.1mm": -0.70, "0.15mm": -0.35, "0.2mm": 0, "0.3mm": 0.70 },
         "selfad.decoPaper":     { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
                                   carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
-        "selfad.middleLayer":   { "1.0mm": -0.60, "2.0mm": 0, "3.0mm": 0.60 },
+        "selfad.middleLayer":   { "1.0mm": -0.60, "1.5mm": -0.30, "2.0mm": 0, "3.0mm": 0.60 },
         "selfad.backingLayer":  { standard: 0, reinforced: 0.30, removable: 0.45 },
         /* ---- 免胶平铺专属 ---- */
         "looselay.uvCoating":   { matte: 0, semiMatte: 0.10, glossy: 0.25 },
