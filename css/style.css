@@ -721,6 +721,14 @@ p { margin-bottom: 0.8em; }
     border-color: var(--color-primary);
     color: #fff;
 }
+.category-tab .tab-en {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 400;
+    opacity: 0.72;
+    margin-top: 1px;
+    letter-spacing: 0.2px;
+}
 
 /* ==========================================================================
    技术参数表
