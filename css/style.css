@@ -2142,7 +2142,7 @@ a.lang-switch__option {
 /* Tab 切换 */
 .quote-tabs {
     display: flex;
-    flex-wrap: wrap;    /* 四个 Tab 在窄屏下自动换行 */
+    flex-wrap: wrap;    /* 五个 Tab 在窄屏下自动换行 */
     gap: 4px;
     background: var(--color-bg);
     padding: 6px;
@@ -2151,17 +2151,20 @@ a.lang-switch__option {
 }
 .quote-tab {
     flex: 1;
-    padding: 13px 16px;
+    min-width: 0;
+    padding: 12px 6px;
     background: transparent;
     border: none;
     border-radius: var(--radius-sm);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 600;
     color: var(--color-text-light);
     cursor: pointer;
     transition: var(--transition);
     font-family: inherit;
-    letter-spacing: 0.3px;
+    letter-spacing: 0.2px;
+    text-align: center;
+    line-height: 1.35;
 }
 .quote-tab.active {
     background: var(--color-primary);

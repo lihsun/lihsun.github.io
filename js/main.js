@@ -436,7 +436,7 @@
        11. 自定义报价配置器（仅 quote.html 生效）
        ====================================================================== */
 
-    /* 三种地板的层配置数据：所有文本通过 i18n key 动态获取 */
+    /* 五种地板的层配置数据：所有文本通过 i18n key 动态获取 */
     var QUOTE_CONFIG = {
         spc: {
             nameKey: "quote.tab.spc",
@@ -507,8 +507,9 @@
                 }
             ]
         },
-        lvt: {
-            nameKey: "quote.tab.lvt",
+        lvtdryback: {
+            /* 油压干背地板（LVT Dryback）：胶粘铺装，无锁扣系统 */
+            nameKey: "quote.tab.lvtdryback",
             layers: [
                 {
                     key: "uvCoating", nameKey: "quote.layer.uvCoating", type: "radio",
@@ -568,7 +569,76 @@
                     key: "baseLayer", nameKey: "quote.layer.baseLayer", type: "radio",
                     options: [
                         { value: "dryback",  labelKey: "quote.opt.base.dryback" },
-                        { value: "looselay", labelKey: "quote.opt.base.looselay" },
+                        { value: "ixpe15",   labelKey: "quote.opt.base.ixpe15" },
+                        { value: "eva15",    labelKey: "quote.opt.base.eva15" },
+                        { value: "cork15",   labelKey: "quote.opt.base.cork15" }
+                    ],
+                    defaultValue: "dryback"
+                }
+            ]
+        },
+        lvtclick: {
+            /* 油压锁扣地板（LVT Click）：悬浮锁扣铺装，锁扣系统在通用配置中选择 */
+            nameKey: "quote.tab.lvtclick",
+            layers: [
+                {
+                    key: "uvCoating", nameKey: "quote.layer.uvCoating", type: "radio",
+                    options: [
+                        { value: "matte",     labelKey: "quote.opt.matte" },
+                        { value: "semiMatte", labelKey: "quote.opt.semiMatte" },
+                        { value: "glossy",    labelKey: "quote.opt.glossy" }
+                    ],
+                    defaultValue: "semiMatte"
+                },
+                {
+                    key: "wearLayer", nameKey: "quote.layer.wearLayer", type: "radio",
+                    options: [
+                        { value: "0.1mm",  labelKey: "quote.opt.wl.0.1" },
+                        { value: "0.15mm", labelKey: "quote.opt.wl.0.15" },
+                        { value: "0.2mm",  labelKey: "quote.opt.wl.0.2" },
+                        { value: "0.3mm",  labelKey: "quote.opt.wl.0.3" },
+                        { value: "0.5mm",  labelKey: "quote.opt.wl.0.5" },
+                        { value: "0.55mm", labelKey: "quote.opt.wl.0.55" },
+                        { value: "0.7mm",  labelKey: "quote.opt.wl.0.7" },
+                        { value: "1.0mm",  labelKey: "quote.opt.wl.1.0" }
+                    ],
+                    defaultValue: "0.3mm"
+                },
+                {
+                    key: "decoPaper", nameKey: "quote.layer.decoPaper", type: "radio",
+                    options: [
+                        { value: "woodGrain",   labelKey: "quote.opt.woodGrain" },
+                        { value: "stoneGrain",  labelKey: "quote.opt.stoneGrain" },
+                        { value: "concrete",    labelKey: "quote.opt.concrete" },
+                        { value: "carpet",      labelKey: "quote.opt.carpet" },
+                        { value: "herringbone", labelKey: "quote.opt.herringbone" },
+                        { value: "chevron",     labelKey: "quote.opt.chevron" }
+                    ],
+                    defaultValue: "woodGrain"
+                },
+                {
+                    key: "middleLayer", nameKey: "quote.layer.middleLayer", type: "radio",
+                    options: [
+                        { value: "1.0mm", labelKey: "quote.opt.ml.1.0" },
+                        { value: "2.0mm", labelKey: "quote.opt.ml.2.0" },
+                        { value: "3.0mm", labelKey: "quote.opt.ml.3.0" }
+                    ],
+                    defaultValue: "2.0mm"
+                },
+                {
+                    key: "glassFiber", nameKey: "quote.layer.glassFiber", type: "radio",
+                    options: [
+                        { value: "single40",  labelKey: "quote.opt.gf.single40" },
+                        { value: "single100", labelKey: "quote.opt.gf.single100" },
+                        { value: "single120", labelKey: "quote.opt.gf.single120" },
+                        { value: "dual100",   labelKey: "quote.opt.gf.dual100" }
+                    ],
+                    defaultValue: "single100"
+                },
+                {
+                    key: "baseLayer", nameKey: "quote.layer.baseLayer", type: "radio",
+                    options: [
+                        { value: "dryback",  labelKey: "quote.opt.base.dryback" },
                         { value: "ixpe15",   labelKey: "quote.opt.base.ixpe15" },
                         { value: "eva15",    labelKey: "quote.opt.base.eva15" },
                         { value: "cork15",   labelKey: "quote.opt.base.cork15" }
@@ -703,7 +773,7 @@
         }
     };
 
-    /* 通用附加配置项（四种地板共通；exclude 指定不适用的地板类型） */
+    /* 通用附加配置项（五种地板共通；exclude 指定不适用的地板类型） */
     var QUOTE_COMMON = [
         {
             key: "size", nameKey: "quote.common.size",
@@ -743,7 +813,7 @@
         },
         {
             key: "click", nameKey: "quote.common.click",
-            exclude: ["selfad", "looselay"],   /* 自粘背胶/免胶平铺无需锁扣系统 */
+            exclude: ["lvtdryback", "selfad", "looselay"],   /* 油压干背(胶粘)/自粘背胶/自沉吸地板无需锁扣系统 */
             options: [
                 { value: "unilin",     labelKey: "quote.opt.click.unilin" },
                 { value: "valinge2g",  labelKey: "quote.opt.click.valinge2g" },
@@ -782,10 +852,11 @@
 
     /* 基准配置价格（美元/平方米，FOB）：
        SPC：4.0mm 基材 / 0.2mm 耐磨层 / 半哑光 UV / 木纹 / 密度 2000
-       LVT：2.0mm 中层 / 0.3mm 耐磨层 / 半哑光 UV / 木纹 / 单层100玻纤 / PVC 干背
+       LVT 油压干背/油压锁扣：2.0mm 中层 / 0.3mm 耐磨层 / 半哑光 UV / 木纹 / 单层100玻纤 / PVC 干背
+       （两者层结构与基准价一致；锁扣系统差价由通用配置"锁扣系统"增量体现，油压干背默认不含锁扣）
        自粘背胶：2.0mm 中层 / 0.2mm 耐磨层 / 半哑光 UV / 木纹 / 标准自粘胶
        免胶平铺：4.0mm 基材 / 0.3mm 耐磨层 / 半哑光 UV / 木纹 / 单层100玻纤 / 高密度防滑底 */
-    var QUOTE_PRICE_BASE = { spc: 2.55, lvt: 3.40, selfad: 2.80, looselay: 3.85 };
+    var QUOTE_PRICE_BASE = { spc: 2.55, lvtdryback: 3.40, lvtclick: 3.40, selfad: 2.80, looselay: 3.85 };
 
     /* 各配置项相对基准配置的价格增量（USD/m²），未列出的选项增量为 0 */
     var QUOTE_PRICE_DELTA = {
@@ -798,15 +869,23 @@
         "spc.spcCore.thickness":{ "3.5mm": -0.60, "4.0mm": 0, "4.5mm": 0.60, "5.0mm": 1.20,
                                   "5.5mm": 1.80, "6.0mm": 2.40, "7.0mm": 3.60, "8.0mm": 4.80 },
         "spc.spcCore.density":  { "1900": -0.50, "2000": 0, "2100": 0.50, "2200": 1.00 },
-        /* ---- LVT 专属 ---- */
-        "lvt.uvCoating":        { matte: 0, semiMatte: 0.10, glossy: 0.25 },
-        "lvt.wearLayer":        { "0.1mm": -1.40, "0.15mm": -1.05, "0.2mm": -0.70, "0.3mm": 0, "0.5mm": 1.40,
+        /* ---- LVT 油压干背/油压锁扣 专属（层结构一致；锁扣差价由 common.click 体现） ---- */
+        "lvtdryback.uvCoating":   { matte: 0, semiMatte: 0.10, glossy: 0.25 },
+        "lvtdryback.wearLayer":   { "0.1mm": -1.40, "0.15mm": -1.05, "0.2mm": -0.70, "0.3mm": 0, "0.5mm": 1.40,
                                   "0.55mm": 1.75, "0.7mm": 2.80, "1.0mm": 4.90 },
-        "lvt.decoPaper":        { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
+        "lvtdryback.decoPaper":   { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
                                   carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
-        "lvt.middleLayer":      { "1.0mm": -0.60, "2.0mm": 0, "3.0mm": 0.60 },
-        "lvt.glassFiber":       { single40: 0, single100: 0.15, single120: 0.25, dual100: 0.40 },
-        "lvt.baseLayer":        { dryback: 0, looselay: 0.80, ixpe15: 1.20, eva15: 0.70, cork15: 1.80 },
+        "lvtdryback.middleLayer": { "1.0mm": -0.60, "2.0mm": 0, "3.0mm": 0.60 },
+        "lvtdryback.glassFiber":  { single40: 0, single100: 0.15, single120: 0.25, dual100: 0.40 },
+        "lvtdryback.baseLayer":  { dryback: 0, ixpe15: 1.20, eva15: 0.70, cork15: 1.80 },
+        "lvtclick.uvCoating":    { matte: 0, semiMatte: 0.10, glossy: 0.25 },
+        "lvtclick.wearLayer":    { "0.1mm": -1.40, "0.15mm": -1.05, "0.2mm": -0.70, "0.3mm": 0, "0.5mm": 1.40,
+                                  "0.55mm": 1.75, "0.7mm": 2.80, "1.0mm": 4.90 },
+        "lvtclick.decoPaper":    { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
+                                  carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
+        "lvtclick.middleLayer":  { "1.0mm": -0.60, "2.0mm": 0, "3.0mm": 0.60 },
+        "lvtclick.glassFiber":   { single40: 0, single100: 0.15, single120: 0.25, dual100: 0.40 },
+        "lvtclick.baseLayer":    { dryback: 0, ixpe15: 1.20, eva15: 0.70, cork15: 1.80 },
         /* ---- 自粘背胶专属 ---- */
         "selfad.uvCoating":     { matte: 0, semiMatte: 0.10, glossy: 0.25 },
         "selfad.wearLayer":     { "0.07mm": -0.90, "0.1mm": -0.70, "0.15mm": -0.35, "0.2mm": 0, "0.3mm": 0.70 },
@@ -823,7 +902,7 @@
         "looselay.glassFiber":  { single40: 0, single100: 0.15, single120: 0.25, dual100: 0.40 },
         "looselay.coreLayer":   { "3.5mm": -0.60, "4.0mm": 0, "4.5mm": 0.60, "5.0mm": 1.20 },
         "looselay.slipBack":    { standard: 0, ixpe: 0.50, cork: 1.80 },
-        /* ---- 通用配置（四种地板共通） ---- */
+        /* ---- 通用配置（五种地板共通） ---- */
         "common.size":          { "152x914": 0, "178x1220": 0.05, "180x1220": 0.05,
                                   "228x1220": 0.15, "228x1520": 0.20, "6x36": 0,
                                   "7x48": 0.05, "9x60": 0.20 },
@@ -849,7 +928,7 @@
             }
         });
 
-        /* 通用配置增量（跳过当前地板类型不适用的项，如免胶平铺/自粘背胶的锁扣） */
+        /* 通用配置增量（跳过当前地板类型不适用的项，如油压干背/自粘背胶/自沉吸的锁扣） */
         QUOTE_COMMON.forEach(function (item) {
             if (!quoteCommonApplies(item, ft)) return;
             var v = quoteState.config.common[item.key];
@@ -882,7 +961,7 @@
     /* 当前状态 */
     var quoteState = {
         floorType: "spc",
-        config: { spc: {}, lvt: {}, selfad: {}, looselay: {}, common: {} }
+        config: { spc: {}, lvtdryback: {}, lvtclick: {}, selfad: {}, looselay: {}, common: {} }
     };
 
     /* 初始化默认值 */
