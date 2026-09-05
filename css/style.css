@@ -692,6 +692,162 @@ p { margin-bottom: 0.8em; }
 }
 
 /* ==========================================================================
+   产品卡片：场景/性能标签 + 点击展开详情（2026-09 五系列典型配置）
+   ========================================================================== */
+.product-card__media { cursor: pointer; }
+.product-card__hint {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    background: rgba(19, 31, 37, 0.62);
+    color: #fff;
+    font-size: 0.72rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+}
+.product-card:hover .product-card__hint,
+.product-card:focus-within .product-card__hint {
+    opacity: 1;
+    transform: translateY(0);
+}
+.product-card--expanded .product-card__hint { display: none; }
+.product-card--expanded:hover {
+    transform: none;
+    box-shadow: var(--shadow-md);
+}
+.product-card--expanded .product-card__media img { transform: none; }
+
+/* 场景标签（强调色）/ 性能标签（中性色） */
+.product-card__meta .chip--scene {
+    background: rgba(178, 118, 56, 0.12);
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+/* 详情面板：收起态 */
+.product-card__detail {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.55s ease, opacity 0.4s ease 0.1s;
+}
+.product-detail__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--color-border);
+}
+.product-detail__title {
+    font-size: 1.05rem;
+    color: var(--color-primary);
+    line-height: 1.4;
+}
+.product-detail__close {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
+    color: var(--color-text);
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: var(--transition);
+}
+.product-detail__close:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+.product-detail__blocks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 30px;
+}
+.product-detail__block h4 {
+    font-size: 0.88rem;
+    color: var(--color-accent);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+.product-detail__block .ico { font-size: 1rem; }
+.product-detail__block p {
+    font-size: 0.86rem;
+    color: var(--color-text-light);
+    line-height: 1.75;
+}
+.product-detail__list { list-style: none; }
+.product-detail__list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 14px;
+    font-size: 0.83rem;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--color-border);
+}
+.product-detail__list li:last-child { border-bottom: none; }
+.product-detail__list li span {
+    color: var(--color-text-light);
+    flex-shrink: 0;
+}
+.product-detail__list li b {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-align: right;
+}
+
+/* 展开态：桌面（>992px）左图右详情，卡片占满整行 */
+@media (min-width: 993px) {
+    .product-card--expanded {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: minmax(300px, 2fr) 3fr;
+        border-color: var(--color-accent);
+        box-shadow: var(--shadow-lg);
+        z-index: 5;
+    }
+    .product-card--expanded .product-card__media {
+        aspect-ratio: auto;
+        height: 100%;
+        min-height: 360px;
+    }
+    .product-card--expanded .product-card__body { display: none; }
+    .product-card--expanded .product-card__detail {
+        max-height: 760px;
+        opacity: 1;
+        padding: 30px 34px;
+        border-left: 1px solid var(--color-border);
+        overflow-y: auto;
+    }
+}
+/* 展开态：平板及以下（≤992px）原位纵向展开，详情单列 */
+@media (max-width: 992px) {
+    .product-card--expanded { grid-column: 1 / -1; }
+    .product-card--expanded .product-card__detail {
+        max-height: 1800px;
+        opacity: 1;
+        padding: 26px 24px 32px;
+        border-top: 1px solid var(--color-border);
+    }
+    .product-detail__blocks { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
    产品分类筛选（产品页）
    ========================================================================== */
 .category-tabs {

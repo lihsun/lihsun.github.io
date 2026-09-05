@@ -196,6 +196,7 @@
         if (tabs.length === 0 || cards.length === 0) return;
 
         function applyFilter(filter) {
+            productExpandCollapse(true);
             tabs.forEach(function (t) {
                 t.classList.toggle("active", t.getAttribute("data-filter") === filter);
             });
@@ -225,6 +226,149 @@
         var param = new URLSearchParams(window.location.search).get("filter");
         if (param && tabs.some(function (t) { return t.getAttribute("data-filter") === param; })) {
             applyFilter(param);
+        }
+    }
+
+    /* ======================================================================
+       6.5 产品卡片点击展开详情（2026-09 五系列典型配置）
+       桌面（>992px）：卡片 FLIP 动画移至本行行首并占满整行，左图右详情，
+                       同行其余卡片向下让开（全部平滑过渡）
+       平板/手机（≤992px）：卡片原位手风琴展开，详情面板纵向单列
+       ====================================================================== */
+    var productExpandState = { grid: null, expanded: null };
+
+    function productExpandSnapshot() {
+        var m = new Map();
+        $all(".product-card", productExpandState.grid).forEach(function (c) {
+            if (c.offsetParent !== null) m.set(c, c.getBoundingClientRect());
+        });
+        return m;
+    }
+
+    function productExpandPlay(first) {
+        $all(".product-card", productExpandState.grid).forEach(function (c) {
+            if (c.offsetParent === null) return;
+            var old = first.get(c);
+            if (!old) return;
+            var now = c.getBoundingClientRect();
+            var dx = old.left - now.left;
+            var dy = old.top - now.top;
+            if (dx === 0 && dy === 0) return;
+            c.style.transition = "none";
+            c.style.transform = "translate(" + dx + "px," + dy + "px)";
+            c.style.zIndex = "3";
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    c.style.transition = "transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1)";
+                    c.style.transform = "";
+                    setTimeout(function () {
+                        c.style.transition = "";
+                        c.style.transform = "";
+                        c.style.zIndex = "";
+                    }, 520);
+                });
+            });
+        });
+    }
+
+    function productExpandRestore(card) {
+        if (card._expandNext !== undefined) {
+            productExpandState.grid.insertBefore(card, card._expandNext);
+        }
+    }
+
+    function productExpandCollapse(instant) {
+        var card = productExpandState.expanded;
+        if (!card) return;
+        if (instant) {
+            productExpandRestore(card);
+            card.classList.remove("product-card--expanded");
+            productExpandState.expanded = null;
+            return;
+        }
+        var first = productExpandSnapshot();
+        productExpandRestore(card);
+        card.classList.remove("product-card--expanded");
+        productExpandState.expanded = null;
+        productExpandPlay(first);
+    }
+
+    function initProductExpand() {
+        var grid = $(".products-grid");
+        if (!grid) return;
+        productExpandState.grid = grid;
+        var mqDesktop = window.matchMedia("(min-width: 993px)");
+
+        function expand(card) {
+            if (productExpandState.expanded === card) {
+                productExpandCollapse();
+                return;
+            }
+            var first = productExpandSnapshot();
+            var old = productExpandState.expanded;
+            if (old) {
+                productExpandRestore(old);
+                old.classList.remove("product-card--expanded");
+                productExpandState.expanded = null;
+            }
+            if (mqDesktop.matches) {
+                /* 复位后重新布局，找点击卡片所在行的行首卡片 */
+                var vis = $all(".product-card", grid).filter(function (c) {
+                    return c.offsetParent !== null;
+                });
+                var rect = card.getBoundingClientRect();
+                var lead = card;
+                vis.forEach(function (c) {
+                    if (c === card) return;
+                    var r = c.getBoundingClientRect();
+                    if (Math.abs(r.top - rect.top) < 40 && r.left < lead.getBoundingClientRect().left) {
+                        lead = c;
+                    }
+                });
+                card._expandNext = card.nextSibling;
+                if (lead !== card) grid.insertBefore(card, lead);
+            } else {
+                card._expandNext = card.nextSibling;
+            }
+            card.classList.add("product-card--expanded");
+            productExpandState.expanded = card;
+            productExpandPlay(first);
+            /* 展开后将卡片滚入视口 */
+            setTimeout(function () {
+                var top = card.getBoundingClientRect().top;
+                if (mqDesktop.matches) {
+                    if (top < 80) {
+                        window.scrollTo({ top: window.pageYOffset + top - 80, behavior: "smooth" });
+                    }
+                } else if (top < 60 || top > window.innerHeight * 0.6) {
+                    card.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+            }, 540);
+        }
+
+        $all(".product-card", grid).forEach(function (card) {
+            var media = $(".product-card__media", card);
+            if (media) {
+                media.addEventListener("click", function () { expand(card); });
+            }
+            var close = $(".product-detail__close", card);
+            if (close) {
+                close.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    productExpandCollapse();
+                });
+            }
+        });
+
+        document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") productExpandCollapse();
+        });
+
+        /* 断点切换（横竖屏旋转 / 拖拽窗口）时瞬时复位，避免布局错乱 */
+        if (mqDesktop.addEventListener) {
+            mqDesktop.addEventListener("change", function () {
+                productExpandCollapse(true);
+            });
         }
     }
 
@@ -1505,6 +1649,7 @@
         initReveal();
         initCountUp();
         initProductFilter();
+        initProductExpand();   /* 产品卡片点击展开详情 */
         initLightbox();
         initContactForm();
         initHeaderScroll();
