@@ -694,6 +694,7 @@
                     key: "middleLayer", nameKey: "quote.layer.middleLayer", type: "radio",
                     options: [
                         { value: "1.0mm", labelKey: "quote.opt.ml.1.0" },
+                        { value: "1.5mm", labelKey: "quote.opt.ml.1.5" },
                         { value: "2.0mm", labelKey: "quote.opt.ml.2.0" },
                         { value: "3.0mm", labelKey: "quote.opt.ml.3.0" }
                     ],
@@ -765,7 +766,8 @@
                     options: [
                         { value: "1.0mm", labelKey: "quote.opt.ml.1.0" },
                         { value: "2.0mm", labelKey: "quote.opt.ml.2.0" },
-                        { value: "3.0mm", labelKey: "quote.opt.ml.3.0" }
+                        { value: "3.0mm", labelKey: "quote.opt.ml.3.0" },
+                        { value: "5.0mm", labelKey: "quote.opt.ml.5.0" }
                     ],
                     defaultValue: "2.0mm"
                 },
@@ -783,6 +785,7 @@
                     key: "baseLayer", nameKey: "quote.layer.baseLayer", type: "radio",
                     options: [
                         { value: "dryback",  labelKey: "quote.opt.base.dryback" },
+                        { value: "ixpe10",   labelKey: "quote.opt.base.ixpe10" },
                         { value: "ixpe15",   labelKey: "quote.opt.base.ixpe15" },
                         { value: "eva15",    labelKey: "quote.opt.base.eva15" },
                         { value: "cork15",   labelKey: "quote.opt.base.cork15" }
@@ -923,6 +926,8 @@
             key: "size", nameKey: "quote.common.size",
             options: [
                 { value: "152x914",  labelKey: "quote.opt.size.152x914" },
+                { value: "152x1220", labelKey: "quote.opt.size.152x1220" },
+                { value: "178x914",  labelKey: "quote.opt.size.178x914" },
                 { value: "178x1220", labelKey: "quote.opt.size.178x1220" },
                 { value: "180x1220", labelKey: "quote.opt.size.180x1220" },
                 { value: "228x1220", labelKey: "quote.opt.size.228x1220" },
@@ -1019,7 +1024,7 @@
                                   "0.55mm": 1.75, "0.7mm": 2.80, "1.0mm": 4.90 },
         "lvtdryback.decoPaper":   { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
                                   carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
-        "lvtdryback.middleLayer": { "1.0mm": -0.60, "2.0mm": 0, "3.0mm": 0.60 },
+        "lvtdryback.middleLayer": { "1.0mm": -0.60, "1.5mm": -0.30, "2.0mm": 0, "3.0mm": 0.60 },
         "lvtdryback.glassFiber":  { single40: 0, single100: 0.15, single120: 0.25, dual100: 0.40 },
         "lvtdryback.baseLayer":  { dryback: 0, ixpe15: 1.20, eva15: 0.70, cork15: 1.80 },
         "lvtclick.uvCoating":    { matte: 0, semiMatte: 0.10, glossy: 0.25 },
@@ -1027,9 +1032,9 @@
                                   "0.55mm": 1.75, "0.7mm": 2.80, "1.0mm": 4.90 },
         "lvtclick.decoPaper":    { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
                                   carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
-        "lvtclick.middleLayer":  { "1.0mm": -0.60, "2.0mm": 0, "3.0mm": 0.60 },
+        "lvtclick.middleLayer":  { "1.0mm": -0.60, "2.0mm": 0, "3.0mm": 0.60, "5.0mm": 1.80 },
         "lvtclick.glassFiber":   { single40: 0, single100: 0.15, single120: 0.25, dual100: 0.40 },
-        "lvtclick.baseLayer":    { dryback: 0, ixpe15: 1.20, eva15: 0.70, cork15: 1.80 },
+        "lvtclick.baseLayer":    { dryback: 0, ixpe10: 0.80, ixpe15: 1.20, eva15: 0.70, cork15: 1.80 },
         /* ---- 自粘背胶专属 ---- */
         "selfad.uvCoating":     { matte: 0, semiMatte: 0.10, glossy: 0.25 },
         "selfad.wearLayer":     { "0.07mm": -0.90, "0.1mm": -0.70, "0.15mm": -0.35, "0.2mm": 0, "0.3mm": 0.70 },
@@ -1047,9 +1052,9 @@
         "looselay.coreLayer":   { "3.5mm": -0.60, "4.0mm": 0, "4.5mm": 0.60, "5.0mm": 1.20 },
         "looselay.slipBack":    { standard: 0, ixpe: 0.50, cork: 1.80 },
         /* ---- 通用配置（五种地板共通） ---- */
-        "common.size":          { "152x914": 0, "178x1220": 0.05, "180x1220": 0.05,
-                                  "228x1220": 0.15, "228x1520": 0.20, "6x36": 0,
-                                  "7x48": 0.05, "9x60": 0.20 },
+        "common.size":          { "152x914": 0, "152x1220": 0.05, "178x914": 0.05,
+                                  "178x1220": 0.05, "180x1220": 0.05, "228x1220": 0.15,
+                                  "228x1520": 0.20, "6x36": 0, "7x48": 0.05, "9x60": 0.20 },
         "common.surface":       { eir: 0.80, deepEmbossed: 0.30, crystal: 0.20,
                                   smooth: 0, handScraped: 0.60, wireBrushed: 0.40 },
         "common.bevel":         { square: 0, micro: 0.05, painted: 0.15, vgroove: 0.20 },
