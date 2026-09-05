@@ -1356,13 +1356,50 @@
         document.body.removeChild(ta);
     }
 
-    /* 初始化报价配置器入口 */
+    /* 从 URL 参数恢复配置（产品中心卡片"获取报价"链接跳转）：
+       quote.html?floor=spc&wearLayer=0.5mm&spcCore.thickness=4.0mm&size=7x48&...
+       仅接受当前地板类型配置中真实存在的键与选项值，脏参数直接忽略 */
+    function quoteApplyUrlParams() {
+        var q = new URLSearchParams(window.location.search);
+        var floor = q.get("floor");
+        if (floor && QUOTE_CONFIG[floor]) quoteState.floorType = floor;
+
+        var items = [];
+        QUOTE_CONFIG[quoteState.floorType].layers.forEach(function (layer) {
+            if (layer.type === "group") {
+                layer.subItems.forEach(function (sub) {
+                    items.push({ key: layer.key + "." + sub.key, options: sub.options, target: "floor" });
+                });
+            } else {
+                items.push({ key: layer.key, options: layer.options, target: "floor" });
+            }
+        });
+        QUOTE_COMMON.forEach(function (item) {
+            if (quoteCommonApplies(item, quoteState.floorType)) {
+                items.push({ key: item.key, options: item.options, target: "common" });
+            }
+        });
+
+        items.forEach(function (item) {
+            var v = q.get(item.key);
+            if (v === null) return;
+            var valid = item.options.some(function (o) { return o.value === v; });
+            if (!valid) return;
+            if (item.target === "common") quoteState.config.common[item.key] = v;
+            else quoteState.config[quoteState.floorType][item.key] = v;
+        });
+    }
+
     function initQuoteConfigurator() {
         var form = $("#quoteForm");
         if (!form) return;
 
-        /* 1. 初始化默认值 + 渲染 */
+        /* 1. 初始化默认值 + URL 参数恢复 + 渲染 */
         quoteInitDefaults();
+        quoteApplyUrlParams();
+        $all(".quote-tab").forEach(function (t) {
+            t.classList.toggle("active", t.getAttribute("data-type") === quoteState.floorType);
+        });
         quoteRenderLayers();
         quoteRenderStack();
         quoteRenderPrice();
