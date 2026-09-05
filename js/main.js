@@ -348,7 +348,8 @@
 
         $all(".product-card", grid).forEach(function (card) {
             var media = $(".product-card__media", card);
-            if (media) {
+            /* 仅绑定带 data-expand 的卡片（产品中心）；首页精选卡无此属性，保持静态 */
+            if (media && media.hasAttribute("data-expand")) {
                 media.addEventListener("click", function () { expand(card); });
             }
             var close = $(".product-detail__close", card);
