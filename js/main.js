@@ -648,6 +648,16 @@
                             defaultValue: "2000"
                         }
                     ]
+                },
+                {
+                    key: "baseLayer", nameKey: "quote.layer.spcPad", type: "radio",
+                    options: [
+                        { value: "none",   labelKey: "quote.opt.spad.none" },
+                        { value: "ixpe10", labelKey: "quote.opt.spad.ixpe10" },
+                        { value: "ixpe15", labelKey: "quote.opt.spad.ixpe15" },
+                        { value: "eva15",  labelKey: "quote.opt.spad.eva15" }
+                    ],
+                    defaultValue: "none"
                 }
             ]
         },
@@ -1018,6 +1028,7 @@
         "spc.spcCore.thickness":{ "3.5mm": -0.60, "4.0mm": 0, "4.5mm": 0.60, "5.0mm": 1.20,
                                   "5.5mm": 1.80, "6.0mm": 2.40, "7.0mm": 3.60, "8.0mm": 4.80 },
         "spc.spcCore.density":  { "1900": -0.50, "2000": 0, "2100": 0.50, "2200": 1.00 },
+        "spc.baseLayer":        { none: 0, ixpe10: 0.80, ixpe15: 1.20, eva15: 0.70 },
         /* ---- LVT 油压干背/油压锁扣 专属（层结构一致；锁扣差价由 common.click 体现） ---- */
         "lvtdryback.uvCoating":   { matte: 0, semiMatte: 0.10, glossy: 0.25 },
         "lvtdryback.wearLayer":   { "0.1mm": -1.40, "0.15mm": -1.05, "0.2mm": -0.70, "0.3mm": 0, "0.5mm": 1.40,
