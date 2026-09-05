@@ -694,7 +694,7 @@ p { margin-bottom: 0.8em; }
 /* ==========================================================================
    产品卡片：场景/性能标签 + 点击展开详情（2026-09 五系列典型配置）
    ========================================================================== */
-.product-card__media { cursor: pointer; }
+.product-card__media[data-expand] { cursor: pointer; }
 .product-card__hint {
     position: absolute;
     right: 12px;
