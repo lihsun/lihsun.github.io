@@ -945,7 +945,7 @@
                 { value: "228x1520", labelKey: "quote.opt.size.228x1520" },
                 { value: "6x36",     labelKey: "quote.opt.size.6x36" },
                 { value: "7x48",     labelKey: "quote.opt.size.7x48" },
-                { value: "9x60",     labelKey: "quote.opt.size.9x60" }
+                { value: "9x60",     labelKey: "quote.opt.size.9x60", excludeFloors: ["lvtdryback", "lvtclick"] }
             ],
             defaultValue: "178x1220"
         },
@@ -995,128 +995,14 @@
         }
     ];
 
-    /* ======================================================================
-       价格数据库（USD/m²，FOB 中国港口）
-       数据来源（2026-09 重新校准）：
-       1) 中国海关 HS 3918.10 出口数据：2024 均价 $1.08/kg、2025 $1.03/kg、
-          2026 年前 8 个月 $1.00/kg（年降约 3%，量价齐缩、竞争加剧）
-       2) Made-in-China / Alibaba 主要工厂挂牌价：Sunjoy 4-6mm 锁扣 SPC
-          $4.1-9.9、Home Top $3.6-11、Weifang Top $2.99-6.99、Dongguan
-          Xinlijie $4.0-6.0、Hebei Shilian 自粘背胶 $2.98-5.10；
-          1688 内销 4mm SPC 约 ¥13.7-14.6/m²
-       3) 校准结论：主流 FOB 区间 $3.6-6.9/m²，本报价取区间中低位保持
-          询盘竞争力：SPC 基准 +$0.20、LVT +$0.20、自粘 +$0.20、自沉吸 +$0.25
-       估算口径：基准价 + 各配置项价格增量；建议每季度校准一次。
-       ====================================================================== */
-    var USD_CNY_RATE = 6.78;   /* 美元兑人民币汇率（2026-09-04 中间价 6.7787，请定期更新） */
-
-    /* 基准配置价格（美元/平方米，FOB）：
-       SPC：4.0mm 基材 / 0.2mm 耐磨层 / 半哑光 UV / 木纹 / 密度 2000
-       LVT 油压干背/油压锁扣：2.0mm 中层 / 0.3mm 耐磨层 / 半哑光 UV / 木纹 / 单层100玻纤 / PVC 干背
-       （两者层结构与基准价一致；锁扣系统差价由通用配置"锁扣系统"增量体现，油压干背默认不含锁扣）
-       自粘背胶：2.0mm 中层 / 0.2mm 耐磨层 / 半哑光 UV / 木纹 / 标准自粘胶
-       自沉吸：4.0mm 基材 / 0.3mm 耐磨层 / 半哑光 UV / 木纹 / 单层100玻纤 / 高密度防滑底 */
-    var QUOTE_PRICE_BASE = { spc: 2.55, lvtdryback: 3.40, lvtclick: 3.40, selfad: 2.80, looselay: 3.85 };
-
-    /* 各配置项相对基准配置的价格增量（USD/m²），未列出的选项增量为 0 */
-    var QUOTE_PRICE_DELTA = {
-        /* ---- SPC 专属 ---- */
-        "spc.uvCoating":        { matte: 0, semiMatte: 0.10, glossy: 0.25, crystal: 0.35 },
-        "spc.wearLayer":        { "0.07mm": -0.90, "0.1mm": -0.70, "0.2mm": 0, "0.3mm": 0.70,
-                                  "0.5mm": 2.10, "0.55mm": 2.45, "0.7mm": 3.50 },
-        "spc.decoPaper":        { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
-                                  carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
-        "spc.spcCore.thickness":{ "3.5mm": -0.60, "4.0mm": 0, "4.5mm": 0.60, "5.0mm": 1.20,
-                                  "5.5mm": 1.80, "6.0mm": 2.40, "7.0mm": 3.60, "8.0mm": 4.80 },
-        "spc.spcCore.density":  { "1900": -0.50, "2000": 0, "2100": 0.50, "2200": 1.00 },
-        "spc.baseLayer":        { none: 0, ixpe10: 0.80, ixpe15: 1.20, eva15: 0.70 },
-        /* ---- LVT 油压干背/油压锁扣 专属（层结构一致；锁扣差价由 common.click 体现） ---- */
-        "lvtdryback.uvCoating":   { matte: 0, semiMatte: 0.10, glossy: 0.25 },
-        "lvtdryback.wearLayer":   { "0.1mm": -1.40, "0.15mm": -1.05, "0.2mm": -0.70, "0.3mm": 0, "0.5mm": 1.40,
-                                  "0.55mm": 1.75, "0.7mm": 2.80, "1.0mm": 4.90 },
-        "lvtdryback.decoPaper":   { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
-                                  carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
-        "lvtdryback.middleLayer": { "1.0mm": -0.60, "1.5mm": -0.30, "2.0mm": 0, "3.0mm": 0.60 },
-        "lvtdryback.glassFiber":  { single40: 0, single100: 0.15, single120: 0.25, dual100: 0.40 },
-        "lvtdryback.baseLayer":  { dryback: 0, ixpe15: 1.20, eva15: 0.70, cork15: 1.80 },
-        "lvtclick.uvCoating":    { matte: 0, semiMatte: 0.10, glossy: 0.25 },
-        "lvtclick.wearLayer":    { "0.1mm": -1.40, "0.15mm": -1.05, "0.2mm": -0.70, "0.3mm": 0, "0.5mm": 1.40,
-                                  "0.55mm": 1.75, "0.7mm": 2.80, "1.0mm": 4.90 },
-        "lvtclick.decoPaper":    { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
-                                  carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
-        "lvtclick.middleLayer":  { "1.0mm": -0.60, "2.0mm": 0, "3.0mm": 0.60, "5.0mm": 1.80 },
-        "lvtclick.glassFiber":   { single40: 0, single100: 0.15, single120: 0.25, dual100: 0.40 },
-        "lvtclick.baseLayer":    { dryback: 0, ixpe10: 0.80, ixpe15: 1.20, eva15: 0.70, cork15: 1.80 },
-        /* ---- 自粘背胶专属 ---- */
-        "selfad.uvCoating":     { matte: 0, semiMatte: 0.10, glossy: 0.25 },
-        "selfad.wearLayer":     { "0.07mm": -0.90, "0.1mm": -0.70, "0.15mm": -0.35, "0.2mm": 0, "0.3mm": 0.70 },
-        "selfad.decoPaper":     { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
-                                  carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
-        "selfad.middleLayer":   { "1.0mm": -0.60, "1.5mm": -0.30, "2.0mm": 0, "3.0mm": 0.60 },
-        "selfad.backingLayer":  { standard: 0, reinforced: 0.30, removable: 0.45 },
-        /* ---- 自沉吸专属 ---- */
-        "looselay.uvCoating":   { matte: 0, semiMatte: 0.10, glossy: 0.25 },
-        "looselay.wearLayer":   { "0.2mm": -0.70, "0.3mm": 0, "0.5mm": 2.10,
-                                  "0.55mm": 2.45, "0.7mm": 3.50 },
-        "looselay.decoPaper":   { woodGrain: 0, stoneGrain: 0.10, concrete: 0.10,
-                                  carpet: 0.15, herringbone: 0.30, chevron: 0.30 },
-        "looselay.glassFiber":  { single40: 0, single100: 0.15, single120: 0.25, dual100: 0.40 },
-        "looselay.coreLayer":   { "3.5mm": -0.60, "4.0mm": 0, "4.5mm": 0.60, "5.0mm": 1.20 },
-        "looselay.slipBack":    { standard: 0, ixpe: 0.50, cork: 1.80 },
-        /* ---- 通用配置（五种地板共通） ---- */
-        "common.size":          { "152x914": 0, "152x1220": 0.05, "178x914": 0.05,
-                                  "178x1220": 0.05, "180x1220": 0.05, "228x1220": 0.15,
-                                  "228x1520": 0.20, "6x36": 0, "7x48": 0.05, "9x60": 0.20 },
-        "common.surface":       { eir: 0.80, deepEmbossed: 0.30, crystal: 0.20,
-                                  smooth: 0, handScraped: 0.60, wireBrushed: 0.40 },
-        "common.bevel":         { square: 0, micro: 0.05, painted: 0.15, vgroove: 0.20 },
-        "common.click":         { unilin: 0.55, valinge2g: 0.30, valinge5g: 0.45,
-                                  valinge5gi: 0.50, i4f: 0.35 },
-        "common.package":       {}   /* 包装规格不影响单价 */
-    };
-
-    /* 计算当前配置的估算价格（USD/m²），返回两位小数 */
-    function quoteCalcPrice() {
-        var ft = quoteState.floorType;
-        var price = QUOTE_PRICE_BASE[ft] || 0;
-        var conf = quoteState.config[ft];
-
-        /* 层配置增量 */
-        Object.keys(conf).forEach(function (key) {
-            var table = QUOTE_PRICE_DELTA[ft + "." + key];
-            if (table && conf[key] in table) {
-                price += table[conf[key]];
-            }
-        });
-
-        /* 通用配置增量（跳过当前地板类型不适用的项，如油压干背/自粘背胶/自沉吸的锁扣） */
-        QUOTE_COMMON.forEach(function (item) {
-            if (!quoteCommonApplies(item, ft)) return;
-            var v = quoteState.config.common[item.key];
-            var table = QUOTE_PRICE_DELTA["common." + item.key];
-            if (table && v in table) {
-                price += table[v];
-            }
-        });
-
-        if (price < 0.5) price = 0.5;   /* 价格下限保护 */
-        return Math.round(price * 100) / 100;
-    }
-
-    /* 渲染实时估算价格（USD + CNY 双币种） */
-    function quoteRenderPrice() {
-        var usdEl = $("#quotePriceUsd");
-        var cnyEl = $("#quotePriceCny");
-        if (!usdEl && !cnyEl) return;
-        var usd = quoteCalcPrice();
-        var cny = Math.round(usd * USD_CNY_RATE * 100) / 100;
-        if (usdEl) usdEl.textContent = "$" + usd.toFixed(2);
-        if (cnyEl) cnyEl.textContent = "¥" + cny.toFixed(2);
-    }
-
     /* 判断某通用配置项是否适用于当前地板类型（exclude 列表内的不适用） */
     function quoteCommonApplies(item, floorType) {
         return !(item.exclude && item.exclude.indexOf(floorType) !== -1);
+    }
+
+    /* 判断某选项是否适用于当前地板类型（excludeFloors 列表内的不适用） */
+    function quoteOptionApplies(opt, floorType) {
+        return !(opt.excludeFloors && opt.excludeFloors.indexOf(floorType) !== -1);
     }
 
     /* 当前状态 */
@@ -1158,6 +1044,7 @@
     function quoteRenderRadio(name, item, currentValue) {
         var html = '<div class="quote-options">';
         item.options.forEach(function (opt) {
+            if (!quoteOptionApplies(opt, quoteState.floorType)) return;
             var isChecked = (opt.value === currentValue);
             html += '<label class="quote-option' + (isChecked ? " checked" : "") + '">' +
                     '<input type="radio" name="' + name + '" value="' + opt.value + '"' + (isChecked ? " checked" : "") + '>' +
@@ -1268,7 +1155,6 @@
         });
 
         quoteRenderStack();
-        quoteRenderPrice();
         quoteUpdateSummary();
     }
 
@@ -1313,11 +1199,6 @@
             var v = quoteState.config.common[item.key];
             lines.push("- " + I18N.t(CURRENT_LANG, item.nameKey) + ": " + quoteGetOptionLabel(item, v));
         });
-        lines.push("");
-        lines.push("【" + I18N.t(CURRENT_LANG, "quote.summary.estPrice") + "】");
-        var estUsd = quoteCalcPrice();
-        var estCny = Math.round(estUsd * USD_CNY_RATE * 100) / 100;
-        lines.push("$" + estUsd.toFixed(2) + " /m²  ≈  ¥" + estCny.toFixed(2) + " /m² (FOB)");
         lines.push("");
         lines.push("【" + I18N.t(CURRENT_LANG, "quote.summary.contactInfo") + "】");
         var form = $("#quoteForm");
@@ -1400,7 +1281,7 @@
         items.forEach(function (item) {
             var v = q.get(item.key);
             if (v === null) return;
-            var valid = item.options.some(function (o) { return o.value === v; });
+            var valid = item.options.some(function (o) { return quoteOptionApplies(o, quoteState.floorType) && o.value === v; });
             if (!valid) return;
             if (item.target === "common") quoteState.config.common[item.key] = v;
             else quoteState.config[quoteState.floorType][item.key] = v;
@@ -1419,7 +1300,6 @@
         });
         quoteRenderLayers();
         quoteRenderStack();
-        quoteRenderPrice();
         quoteUpdateSummary();
 
         /* 2. Tab 切换 */
@@ -1428,9 +1308,17 @@
                 $all(".quote-tab").forEach(function (t) { t.classList.remove("active"); });
                 tab.classList.add("active");
                 quoteState.floorType = tab.getAttribute("data-type");
+                /* 新地板类型下不适用的已选通用值回退为默认值 */
+                QUOTE_COMMON.forEach(function (item) {
+                    if (!quoteCommonApplies(item, quoteState.floorType)) return;
+                    var cur = quoteState.config.common[item.key];
+                    var valid = item.options.some(function (o) {
+                        return quoteOptionApplies(o, quoteState.floorType) && o.value === cur;
+                    });
+                    if (!valid) quoteState.config.common[item.key] = item.defaultValue;
+                });
                 quoteRenderLayers();
                 quoteRenderStack();
-                quoteRenderPrice();
                 quoteUpdateSummary();
             });
         });
@@ -1561,7 +1449,6 @@
         document.addEventListener("languagechange", function () {
             quoteRenderLayers();
             quoteRenderStack();
-            quoteRenderPrice();
             quoteUpdateSummary();
         });
     }
